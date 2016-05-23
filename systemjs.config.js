@@ -10,7 +10,8 @@
 
     '@angular':                   'node_modules/@angular',
     'angular2-in-memory-web-api': 'node_modules/angular2-in-memory-web-api',
-    'rxjs':                       'node_modules/rxjs'
+    'rxjs':                       'node_modules/rxjs',
+    'd3':                         'node_modules/d3'
   };
 
   // packages tells the System loader how to load when no filename and/or no extension
