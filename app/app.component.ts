@@ -13,7 +13,6 @@ declare var d3: any;
     selector: 'my-app',
     template: `
         <h1>D3 Test</h1>
-        <svg class='chart' ></svg>
         `
 })
 export class AppComponent {
@@ -38,6 +37,20 @@ export class AppComponent {
         let dataset = [5, 10, 13, 19, 21, 25, 22, 18, 15, 13,
             11, 12, 15, 20, 18, 17, 16, 18, 23, 25];
         let barPadding = 1;
+        let xPadding = 30;
+        let yPadding = 20;
+
+        let xScale = d3.scale.linear()
+            .domain([0, 20])
+            .range([xPadding, w - xPadding]);
+
+        let maxY = d3.max(dataset, function (d) {
+            return d;
+        });
+        let yScale = d3.scale.linear()
+            .domain([0, maxY])
+            .range([yPadding, h - yPadding]);
+
 
         // Create SVG element
         let svg = d3.select('body')
@@ -50,14 +63,15 @@ export class AppComponent {
             .enter()
             .append('rect')
             .attr('x', function (d, i) {
-                return i * (w / dataset.length);
+                return i * ( w  / dataset.length);
             })
             .attr('y', function (d) {
-                return h - d * 4;  //Height minus data value
+                return h - (yScale(d) + yPadding);  //Height minus data value
             })
-            .attr('width', w / dataset.length - barPadding)
+            // .attr('width', w / dataset.length - barPadding)
+            .attr('width', (w - xPadding) / dataset.length - barPadding)
             .attr('height', function (d) {
-                return d * 4;
+                return yScale(d) - yPadding;
             })
             .attr('fill', function (d) {
                 return 'rgb(0, 0, ' + (d * 10) + ')';
@@ -74,51 +88,33 @@ export class AppComponent {
                 return i * (w / dataset.length) + (w / dataset.length - barPadding) / 2;
             })
             .attr('y', function (d) {
-                return h - (d * 4) + 14; // 14 is space for number
+                return h - yScale(d) + 14; // 14 is space for number
             })
             .attr('font-family', 'sans-serif')
             .attr('font-size', '11px')
             .attr('fill', 'white')
             .attr('text-anchor', 'middle');
 
-    }
 
-    drawChart2() {
-        var scale = {
-            y: d3.scale.linear()
-        };
+        let xAxis = d3.svg.axis()
+            .scale(xScale)
+            .orient('bottom')
+            .ticks(5);
+        svg.append('g')
+            .attr('class', 'axis')  // for css
+            .attr('transform', 'translate(0,' + (h - xPadding) + ')')
+            // .attr('transform', 'translate(0,' + h + ')')
+            .call(xAxis);
 
-        var totalWidth = 500;
-        var totalHeight = 200;
+        let yAxis = d3.svg.axis()
+            .scale(yScale)
+            .orient('left')
+            .ticks(5);
+        svg.append('g')
+            .attr('class', 'axis')
+            .attr('transform', 'translate(' + yPadding + ',0)')
+            .call(yAxis);
 
-        scale.y.domain([0, 100]);
-        scale.y.range([totalHeight, 0]);
 
-        var ages = [30, 22, 33, 45];
-        var barWidth = 20;
-
-        var chart = d3.select('.chart')
-            .attr({
-                'width': totalWidth,
-                'height': totalHeight
-            });
-
-        var bars = chart
-            .selectAll('g')
-            .data(ages)
-            .enter()
-            .append('g');
-
-        bars.append('rect')
-            .attr({
-                'x': function (d, i) {
-                    return i * barWidth;
-                },
-                'y': scale.y,
-                'height': function (d) {
-                    return totalHeight - scale.y(d);
-                },
-                'width': barWidth - 1
-            });
     }
 }
