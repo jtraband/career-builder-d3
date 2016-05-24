@@ -32,19 +32,19 @@ export class AppComponent {
     drawChart() {
         // Width and height
         let w = 500;
-        let h = 100;
+        let h = 150;
 
         let dataset = [5, 10, 13, 19, 21, 25, 22, 18, 15, 13,
             11, 12, 15, 20, 18, 17, 16, 18, 23, 25];
         let barPadding = 1;
         let xPadding = 30;
-        let yPadding = 20;
+        let yPadding = 30;
 
         let xScale = d3.scale.linear()
             .domain([0, 20])
             .range([xPadding, w - xPadding]);
 
-        let maxY = d3.max(dataset, function (d) {
+        let maxY = d3.max(dataset, (d: any) => {
             return d;
         });
         let yScale = d3.scale.linear()
@@ -62,18 +62,17 @@ export class AppComponent {
             .data(dataset)
             .enter()
             .append('rect')
-            .attr('x', function (d, i) {
-                return i * ( w  / dataset.length);
+            .attr('x', (d: any, i: number) => {
+                return  i * ( w  / dataset.length);
             })
-            .attr('y', function (d) {
-                return h - (yScale(d) + yPadding);  //Height minus data value
+            .attr('y', (d: number) => {
+                return h - yScale(d) ;  //Height minus data value
             })
-            // .attr('width', w / dataset.length - barPadding)
-            .attr('width', (w - xPadding) / dataset.length - barPadding)
-            .attr('height', function (d) {
-                return yScale(d) - yPadding;
+            .attr('width', w  / dataset.length - barPadding)
+            .attr('height', (d: number) => {
+                return yScale(d);
             })
-            .attr('fill', function (d) {
+            .attr('fill', (d: number) => {
                 return 'rgb(0, 0, ' + (d * 10) + ')';
             });
 
@@ -81,13 +80,11 @@ export class AppComponent {
             .data(dataset)
             .enter()
             .append('text')
-            .text(function (d) {
-                return d;
-            })
-            .attr('x', function (d, i) {
+            .text( (d: any) => d)
+            .attr('x', (d: any, i: number) => {
                 return i * (w / dataset.length) + (w / dataset.length - barPadding) / 2;
             })
-            .attr('y', function (d) {
+            .attr('y', (d: number) => {
                 return h - yScale(d) + 14; // 14 is space for number
             })
             .attr('font-family', 'sans-serif')
@@ -112,7 +109,8 @@ export class AppComponent {
             .ticks(5);
         svg.append('g')
             .attr('class', 'axis')
-            .attr('transform', 'translate(' + yPadding + ',0)')
+            .attr('transform', 'translate(0,' + (h - yPadding)  + ')')
+            // .attr('transform', 'translate(' + yPadding + ',0)')
             .call(yAxis);
 
 
