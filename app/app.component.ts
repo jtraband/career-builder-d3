@@ -14,6 +14,8 @@ declare var d3: any;
     selector: 'my-app',
     template: `
         <h1>D3 Test</h1>
+        <div class="named-bar"></div>
+        <div class="other-bars"></div>
         `
 })
 export class AppComponent {
@@ -39,7 +41,7 @@ export class AppComponent {
             height = 300 - margin.top - margin.bottom;
 
         // define svg as a G element that translates the origin to the top-left corner of the chart area.
-        let svg = d3.select('body')
+        let svg = d3.select('.named-bar')
             .append('svg')
             .attr('width', width + margin.left + margin.right)
             .attr('height', height + margin.top + margin.bottom)
@@ -142,7 +144,7 @@ export class AppComponent {
         let barPadding = 2;
 
         // define svg as a G element that translates the origin to the top-left corner of the chart area.
-        let svg = d3.select('body')
+        let svg = d3.select('.other-bars')
             .append('svg')
             .attr('width', width + margin.left + margin.right)
             .attr('height', height + margin.top + margin.bottom)
@@ -225,7 +227,7 @@ export class AppComponent {
             height = 300 - margin.top - margin.bottom;
 
         // define svg as a G element that translates the origin to the top-left corner of the chart area.
-        let svg = d3.select('body')
+        let svg = d3.select('.other-bars')
             .append('svg')
             .attr('width', width + margin.left + margin.right)
             .attr('height', height + margin.top + margin.bottom)
