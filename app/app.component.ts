@@ -5,6 +5,7 @@ import { Component, ElementRef } from '@angular/core';
 
 declare var d3: any;
 
+// Ugh... can't get typings correct yet....
 // import * as d3 from 'd3';
 // import * as d3 from 'd3/d3';
 // import * as d3 from 'd3/index';
@@ -15,6 +16,7 @@ declare var d3: any;
     template: `
         <h1>D3 Test</h1>
         <div class="named-bar"></div>
+        <div class="group-bar"></div>
         <div class="other-bars"></div>
         `
 })
@@ -30,8 +32,100 @@ export class AppComponent {
     ngAfterViewInit() {
         d3.select(this.elementRef.nativeElement).select('h1').style('background-color', 'lightblue');
         this.barChartNamedXBar();
+        this.barChartGroupedYBar();
         this.barChartXBar();
         this.barChartYBar();
+    }
+
+    barChartGroupedYBar() {
+        let margin = { top: 25, right: 10, bottom: 20, left: 30 };
+
+        let width = 500 - margin.left - margin.right,
+            height = 300 - margin.top - margin.bottom;
+
+        let x0 = d3.scale.ordinal()
+            .rangeRoundBands([0, width], .1);
+
+        let x1 = d3.scale.ordinal();
+
+        let y = d3.scale.linear()
+            .range([height, 0]);
+
+        let color = d3.scale.ordinal()
+            .range(['#98abc5', '#8a89a6', '#d0743c']);
+
+        let xAxis = d3.svg.axis()
+            .scale(x0)
+            .orient('bottom');
+
+        let yAxis = d3.svg.axis()
+            .scale(y)
+            .orient('left')
+            .tickFormat(d3.format('.2s'));
+
+        let svg = d3.select('.named-bar')
+            .append('svg')
+            .attr('width', width + margin.left + margin.right)
+            .attr('height', height + margin.top + margin.bottom)
+            .append('g')
+            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+        let dataset = [
+            { year: '2015', demand: 12000, supply: 9000 },
+            { year: '2014', demand: 6000, supply: 5000 },
+            { year: '2013', demand: 2000, supply: 1000 },
+        ];
+
+        let groupNames = ['demand', 'supply'];
+
+        dataset.forEach(function (d) {
+            (<any> d).groups = groupNames.map(function (name) { return { name: name, value: +d[name] }; });
+        });
+
+        x0.domain(dataset.map(function (d) { return d.year; }));
+        x1.domain(groupNames).rangeRoundBands([0, x0.rangeBand()]);
+        y.domain([0, d3.max(dataset, (d: any) => {
+            return d3.max(d.groups, (d2: any) => d2.value);
+        })]);
+
+        svg.append('g')
+        .attr('class', 'x axis')
+        .attr('transform', 'translate(0,' + height + ')')
+        .call(xAxis);
+
+        let year = svg.selectAll('.year')
+            .data(dataset)
+            .enter().append('g')
+            .attr('class', 'year')
+            .attr('transform', (d: any) => 'translate(' + x0(d.year) + ',0)');
+
+        year.selectAll('rect')
+            .data((d: any) => d.groups)
+            .enter().append('rect')
+            .attr('width', x1.rangeBand())
+            .attr('x', (d: any) => x1(d.name))
+            .attr('y', (d: any) => y(d.value))
+            .attr('height', (d: any) => height - y(d.value))
+            .style('fill', (d: any) => color(d.name));
+
+        var legend = svg.selectAll('.legend')
+            .data(groupNames.slice().reverse())
+            .enter().append('g')
+            .attr('class', 'legend')
+            .attr('transform', (d: any, i: number) => 'translate(0,' + i * 20 + ')');
+        legend.append('rect')
+            .attr('x', width - 18)
+            .attr('width', 18)
+            .attr('height', 18)
+            .style('fill', color);
+
+        legend.append('text')
+            .attr('x', width - 24)
+            .attr('y', 9)
+            .attr('dy', '.35em')
+            .style('text-anchor', 'end')
+            .text((d: any) => d);
+
     }
 
     barChartNamedXBar() {
@@ -125,12 +219,12 @@ export class AppComponent {
             .call(yAxis);
 
         svg.append('text')
-        .attr('x', 5)
-        .attr('y', 0 - (margin.top / 2))
-        .attr('text-anchor', 'middle')
-        .style('font-size', '20px')
-        .style('text-decoration', 'bold')
-        .text('Military');
+            .attr('x', 5)
+            .attr('y', 0 - (margin.top / 2))
+            .attr('text-anchor', 'middle')
+            .style('font-size', '20px')
+            .style('text-decoration', 'bold')
+            .text('Military');
 
     }
 
