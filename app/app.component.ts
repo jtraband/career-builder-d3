@@ -36,10 +36,13 @@ export class AppComponent {
         let margin = { top: 10, right: 10, bottom: 20, left: 30 };
 
         let width = 500 - margin.left - margin.right,
-            height = 300 - margin.top - margin.bottom;
+            height = 400 - margin.top - margin.bottom;
+
+        let barPadding = 2;
 
         // define svg as a G element that translates the origin to the top-left corner of the chart area.
-        let svg = d3.select('body').append('svg')
+        let svg = d3.select('body')
+            .append('svg')
             .attr('width', width + margin.left + margin.right)
             .attr('height', height + margin.top + margin.bottom)
             .append('g')
@@ -50,8 +53,6 @@ export class AppComponent {
         let max = d3.max(dataset, (d: any) => {
             return d;
         });
-
-        let barPadding = 1;
 
         let xScale = d3.scale.linear()
             .domain([0, max])
@@ -85,11 +86,11 @@ export class AppComponent {
             .enter()
             .append('text')
             .text((d: any) => d)
-            .attr('x', (d: any, i: number) => {
-                return i * (width / dataset.length) + (width / dataset.length - barPadding) / 2;
+            .attr('y', (d: any, i: number) => {
+                return i * (height / dataset.length) + barPadding + 11;
             })
-            .attr('y', (d: number) => {
-                return yScale(d) + 14; // 14 is space for number
+            .attr('x', (d: number) => {
+                return 10;
             })
             .attr('font-family', 'sans-serif')
             .attr('font-size', '11px')
@@ -125,17 +126,12 @@ export class AppComponent {
             height = 300 - margin.top - margin.bottom;
 
         // define svg as a G element that translates the origin to the top-left corner of the chart area.
-        let svg = d3.select('body').append('svg')
+        let svg = d3.select('body')
+            .append('svg')
             .attr('width', width + margin.left + margin.right)
             .attr('height', height + margin.top + margin.bottom)
             .append('g')
             .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
-        // // Create SVG element
-        // let svg = d3.select('body')
-        //     .append('svg')
-        //     .attr('width', w)
-        //     .attr('height', h);
 
         let dataset = [5, 10, 13, 19, 21, 25, 22, 18, 15, 13,
             11, 12, 15, 20, 18, 17, 16, 18, 23, 25];
