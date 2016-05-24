@@ -16,7 +16,6 @@ declare var d3: any;
     template: `
         <h1>D3 Test</h1>
         <div class="named-bar"></div>
-        <div class="group-bar"></div>
         <div class="other-bars"></div>
         `
 })
@@ -108,8 +107,8 @@ export class AppComponent {
             .attr('height', (d: any) => height - y(d.value))
             .style('fill', (d: any) => color(d.name));
 
-        var legend = svg.selectAll('.legend')
-            .data(groupNames.slice().reverse())
+        let legend = svg.selectAll('.legend')
+            .data(groupNames)
             .enter().append('g')
             .attr('class', 'legend')
             .attr('transform', (d: any, i: number) => 'translate(0,' + i * 20 + ')');
@@ -125,6 +124,14 @@ export class AppComponent {
             .attr('dy', '.35em')
             .style('text-anchor', 'end')
             .text((d: any) => d);
+
+         svg.append('text')
+            .attr('x', margin.left)
+            .attr('y', 0 - (margin.top / 2))
+            .attr('text-anchor', 'middle')
+            .style('font-size', '20px')
+            .style('text-decoration', 'bold')
+            .text('Company');
 
     }
 
