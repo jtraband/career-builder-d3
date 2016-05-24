@@ -26,7 +26,7 @@ export class AppComponent {
 
 
     ngAfterViewInit() {
-        d3.select(this.elementRef.nativeElement).select('h1').style('background-color', 'yellow');
+        d3.select(this.elementRef.nativeElement).select('h1').style('background-color', 'lightblue');
         this.barChartNamedXBar();
         // this.barChartXBar();
         // this.barChartYBar();
@@ -37,8 +37,6 @@ export class AppComponent {
 
         let width = 500 - margin.left - margin.right,
             height = 300 - margin.top - margin.bottom;
-
-        let barPadding = 2;
 
         // define svg as a G element that translates the origin to the top-left corner of the chart area.
         let svg = d3.select('body')
@@ -52,7 +50,9 @@ export class AppComponent {
             { key: 'Veteran', value: 574 },
             { key: 'No Obligation', value: 113 },
             { key: 'Active Duty', value: 79 },
+            { key: 'Retired Military', value: 78 },
             { key: 'Reserve-Drilling', value: 56 },
+            { key: 'Inactive Reserve', value: 45 },
             { key: 'Unfilled', value: 10 },
             { key: 'Filled', value: 4 }
         ];
@@ -78,7 +78,6 @@ export class AppComponent {
             .append('g');
 
 
-
         bar.append('rect')
             // svg.selectAll('rect')
             //     .data(dataset)
@@ -96,8 +95,7 @@ export class AppComponent {
             })
             // .attr('height', height / dataset.length - barPadding)
             .attr('height', yScale.rangeBand() - 10)
-            .attr('fill', (d: any) => 'blue');
-
+            .attr('fill', (d: any) => 'lightgreen');
 
         bar.append('text')
             // svg.selectAll('text')
@@ -110,10 +108,10 @@ export class AppComponent {
             })
             .attr('y', (d: any, i: number) => {
                 // return i * (height / dataset.length) + barPadding + 11;
-                return yScale(d.value) + (yScale.rangeBand() / 2) + 5 ;
+                return yScale(d.value) + (yScale.rangeBand() / 2) + 5;
             })
             .attr('font-size', '11px')
-            .attr('fill', 'white')
+            .attr('fill', 'black')
             .attr('text-anchor', 'left')
             .attr('text-anchor', 'center');
 
