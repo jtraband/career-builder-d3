@@ -27,12 +27,117 @@ export class AppComponent {
 
     ngAfterViewInit() {
         d3.select(this.elementRef.nativeElement).select('h1').style('background-color', 'yellow');
-        this.barChart1();
-        this.barChart2();
+        this.barChartNamedXBar();
+        // this.barChartXBar();
+        // this.barChartYBar();
+    }
+
+    barChartNamedXBar() {
+        let margin = { top: 10, right: 10, bottom: 20, left: 30 };
+
+        let width = 500 - margin.left - margin.right,
+            height = 400 - margin.top - margin.bottom;
+
+        let barPadding = 2;
+
+        // define svg as a G element that translates the origin to the top-left corner of the chart area.
+        let svg = d3.select('body')
+            .append('svg')
+            .attr('width', width + margin.left + margin.right)
+            .attr('height', height + margin.top + margin.bottom)
+            .append('g')
+            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+        let dataset = [
+            { key: 'Veteran', value: 574 },
+            { key: 'No Obligation', value: 113 },
+            { key: 'Active Duty', value: 79 },
+            { key: 'Reserve-Drilling', value: 56 },
+            { key: 'Unfilled', value: 10 },
+            { key: 'Filled', value: 4 }
+        ];
+        let max = d3.max(dataset, (d: any) => {
+            return d.value;
+        });
+
+        let xScale = d3.scale.linear()
+            .domain([0, max])
+            .range([0, width]);
+
+        // let yScale = d3.scale.linear()
+        //     .domain([0, dataset.length])
+        //     .range([height, 0]);
+        let yScale = d3.scale.ordinal()
+            .domain(dataset.map((d: any) => d.value))
+            .rangeRoundBands([0, height]);
+
+
+        let bar = svg.selectAll('g')
+            .data(dataset)
+            .enter()
+            .append('g');
+
+
+
+        bar.append('rect')
+            // svg.selectAll('rect')
+            //     .data(dataset)
+            //     .enter()
+            //     .append('rect')
+            .attr('x', (d: number) => {
+                return 0;
+            })
+            .attr('y', (d: any, i: number) => {
+                // return i * (height / dataset.length);
+                return yScale(d.value) + 5;
+            })
+            .attr('width', (d: any) => {
+                return xScale(d.value);
+            })
+            // .attr('height', height / dataset.length - barPadding)
+            .attr('height', yScale.rangeBand() - 10)
+            .attr('fill', (d: any) => 'blue');
+
+        bar.append('text')
+            // svg.selectAll('text')
+            //     .data(dataset)
+            //     .enter()
+            //     .append('text')
+            .text((d: any) => d.key)
+            .attr('x', (d: any) => {
+                return 5; // margin from the left side of the current bar.
+            })
+            .attr('y', (d: any, i: number) => {
+                // return i * (height / dataset.length) + barPadding + 11;
+                return yScale(d.value) + 16;
+            })
+            .attr('font-size', '11px')
+            .attr('fill', 'white')
+            .attr('text-anchor', 'left')
+            .attr('text-anchor', 'center');
+
+        let xAxis = d3.svg.axis()
+            .scale(xScale)
+            .orient('bottom')
+            .ticks(5);
+        svg.append('g')
+            .attr('class', 'axis')  // for css
+            .attr('transform', 'translate(0,' + height + ')')
+            .call(xAxis);
+
+        let yAxis = d3.svg.axis()
+            .scale(yScale)
+            .orient('left')
+            .ticks(5);
+        svg.append('g')
+            .attr('class', 'axis')
+            .call(yAxis);
+
+
     }
 
 
-    barChart1() {
+    barChartXBar() {
         let margin = { top: 10, right: 10, bottom: 20, left: 30 };
 
         let width = 500 - margin.left - margin.right,
@@ -119,7 +224,7 @@ export class AppComponent {
     }
 
 
-    barChart2() {
+    barChartYBar() {
         let margin = { top: 10, right: 10, bottom: 20, left: 30 };
 
         let width = 500 - margin.left - margin.right,
