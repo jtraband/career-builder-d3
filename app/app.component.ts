@@ -28,8 +28,8 @@ export class AppComponent {
     ngAfterViewInit() {
         d3.select(this.elementRef.nativeElement).select('h1').style('background-color', 'lightblue');
         this.barChartNamedXBar();
-        // this.barChartXBar();
-        // this.barChartYBar();
+        this.barChartXBar();
+        this.barChartYBar();
     }
 
     barChartNamedXBar() {
@@ -64,25 +64,15 @@ export class AppComponent {
             .domain([0, max])
             .range([0, width]);
 
-        // let yScale = d3.scale.linear()
-        //     .domain([0, dataset.length])
-        //     .range([height, 0]);
         let yScale = d3.scale.ordinal()
             .domain(dataset.map((d: any) => d.value))
             .rangeRoundBands([0, height]);
 
 
-        let bar = svg.selectAll('g')
+        svg.selectAll('rect')
             .data(dataset)
             .enter()
-            .append('g');
-
-
-        bar.append('rect')
-            // svg.selectAll('rect')
-            //     .data(dataset)
-            //     .enter()
-            //     .append('rect')
+            .append('rect')
             .attr('x', (d: number) => {
                 return 0;
             })
@@ -97,11 +87,11 @@ export class AppComponent {
             .attr('height', yScale.rangeBand() - 10)
             .attr('fill', (d: any) => 'lightgreen');
 
-        bar.append('text')
-            // svg.selectAll('text')
-            //     .data(dataset)
-            //     .enter()
-            //     .append('text')
+
+        svg.selectAll('text')
+            .data(dataset)
+            .enter()
+            .append('text')
             .text((d: any) => d.key)
             .attr('x', (d: any) => {
                 return 5; // margin from the left side of the current bar.
@@ -131,8 +121,6 @@ export class AppComponent {
         svg.append('g')
             .attr('class', 'axis')
             .call(yAxis);
-
-
     }
 
 
