@@ -33,7 +33,7 @@ export class AppComponent {
     }
 
     barChartNamedXBar() {
-        let margin = { top: 10, right: 10, bottom: 20, left: 30 };
+        let margin = { top: 25, right: 10, bottom: 20, left: 30 };
 
         let width = 500 - margin.left - margin.right,
             height = 300 - margin.top - margin.bottom;
@@ -121,6 +121,15 @@ export class AppComponent {
         svg.append('g')
             .attr('class', 'axis')
             .call(yAxis);
+
+        svg.append('text')
+        .attr('x', 5)
+        .attr('y', 0 - (margin.top / 2))
+        .attr('text-anchor', 'middle')
+        .style('font-size', '20px')
+        .style('text-decoration', 'bold')
+        .text('Military');
+
     }
 
 
@@ -206,8 +215,6 @@ export class AppComponent {
         svg.append('g')
             .attr('class', 'axis')
             .call(yAxis);
-
-
     }
 
 
