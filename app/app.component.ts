@@ -36,7 +36,7 @@ export class AppComponent {
         let margin = { top: 10, right: 10, bottom: 20, left: 30 };
 
         let width = 500 - margin.left - margin.right,
-            height = 400 - margin.top - margin.bottom;
+            height = 300 - margin.top - margin.bottom;
 
         let barPadding = 2;
 
@@ -98,6 +98,7 @@ export class AppComponent {
             .attr('height', yScale.rangeBand() - 10)
             .attr('fill', (d: any) => 'blue');
 
+
         bar.append('text')
             // svg.selectAll('text')
             //     .data(dataset)
@@ -109,7 +110,7 @@ export class AppComponent {
             })
             .attr('y', (d: any, i: number) => {
                 // return i * (height / dataset.length) + barPadding + 11;
-                return yScale(d.value) + 16;
+                return yScale(d.value) + (yScale.rangeBand() / 2) + 5 ;
             })
             .attr('font-size', '11px')
             .attr('fill', 'white')
