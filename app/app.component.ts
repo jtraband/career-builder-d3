@@ -63,7 +63,7 @@ export class AppComponent {
         });
         let yScale = d3.scale.linear()
             .domain([0, maxY])
-            .range([ 0, height]);
+            .range([ height, 0]);
 
 
         svg.selectAll('rect')
@@ -74,11 +74,11 @@ export class AppComponent {
                 return  i * ( width  / dataset.length);
             })
             .attr('y', (d: number) => {
-                return height - yScale(d) ;  // Height minus data value
+                return yScale(d) ;  // Height minus data value
             })
             .attr('width', width / dataset.length - barPadding)
             .attr('height', (d: number) => {
-                return yScale(d);
+                return height - yScale(d);
             })
             .attr('fill', (d: number) => {
                 return 'rgb(0, 0, ' + (d * 10) + ')';
@@ -93,7 +93,7 @@ export class AppComponent {
                 return i * (width / dataset.length) + (width / dataset.length - barPadding) / 2;
             })
             .attr('y', (d: number) => {
-                return height - yScale(d) + 14; // 14 is space for number
+                return  yScale(d) + 14; // 14 is space for number
             })
             .attr('font-family', 'sans-serif')
             .attr('font-size', '11px')
