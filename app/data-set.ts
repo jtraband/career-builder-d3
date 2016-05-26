@@ -35,11 +35,11 @@ export class DataSet {
     }
 
     getGroupNames() {
-        return this._dataColumns.map( dc => dc.name);
+        return this._dataColumns.slice(1).map( dc => dc.name);
     }
 
     getGroupLabels() {
-        return this._dataColumns.map( dc => dc.label);
+        return this._dataColumns.slice(1).map( dc => dc.label);
     }
 
 
@@ -48,7 +48,7 @@ export class DataSet {
         this.addDataColumn(dc);
     }
 
-    addColumns(columnNames: string[]) {
+    addColumns(...columnNames: string[]) {
         columnNames.forEach(c => this.addColumn(c));
     }
 
@@ -76,18 +76,5 @@ export class DataSet {
     addDataRows(dataRows: DataRow[]) {
         dataRows.forEach(dr => this.addDataRow(dr));
     }
-
-
-    // transformToDataItems() {
-    //     let dataItems = this._dataRows.map((dataRow) => {
-    //         let dataItem = {};
-    //         dataRow.forEach( (item, ix)  => {
-    //             let dc = this._dataColumns[ix];
-    //             dataItem[dc.name] = item;
-    //         });
-    //         return dataItem;
-    //     });
-    //     return dataItems;
-    // }
 
 }

@@ -1,17 +1,9 @@
 import { DataSet, DataRow, DataColumn  } from './data-set';
-import { ChartMargin, ChartTitle, XAxis } from './interfaces';
+import { HBarChartOptions, ChartMargin, ChartTitle, XAxis } from './interfaces';
 
 declare var d3: any;
 
-export interface HBarChartOptions {
-    width: number;
-    height: number;
-    selector?: string | HTMLElement;
-    title?: ChartTitle;
-    xAxis?: XAxis;
-    margin?: ChartMargin;
 
-}
 
 export class HorizontalBarChart {
 

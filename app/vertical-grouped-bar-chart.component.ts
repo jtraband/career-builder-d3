@@ -1,16 +1,16 @@
 import { Component, Input, OnInit, AfterViewInit, ElementRef }   from '@angular/core';
 
-import { HorizontalBarChart } from './horizontal-bar-chart';
-import { HBarChartOptions } from './interfaces';
+import { VerticalGroupedBarChart } from './vertical-grouped-bar-chart';
+import { VBarChartOptions } from './interfaces';
 import { DataSet } from './data-set';
 
 @Component({
-    selector: 'horizontal-bar-chart',
+    selector: 'vertical-bar-chart',
     template: `<div id="chart"></div>`
 })
-export class HorizontalBarChartComponent {
+export class VerticalGroupedBarChartComponent {
     @Input() data: DataSet;
-    @Input() options: HBarChartOptions;
+    @Input() options: VBarChartOptions;
 
     constructor(private _elementRef: ElementRef) {
     }
@@ -22,7 +22,7 @@ export class HorizontalBarChartComponent {
 
     drawChart() {
         let div = this._elementRef.nativeElement.firstElementChild;
-        let chart = new HorizontalBarChart();
+        let chart = new VerticalGroupedBarChart();
         this.options.selector = div;
         chart.draw(this.data, this.options);
     }
