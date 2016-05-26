@@ -57,12 +57,13 @@ export class HorizontalBarChart {
             .call(xAxis);
 
         let yAxisScale: any;
-        if (groupNames.length > 1) {
-            yAxisScale = y0Scale;
-        } else {
+        if (groupNames.length === 1) {
+            // Use the values themselves as the labels on the yAxis
             yAxisScale = d3.scale.ordinal()
                 .domain(dataRows.map((dr: DataRow) => dr.values[0]))
                 .rangeRoundBands([0, height]);
+        } else {
+            yAxisScale = y0Scale;
         }
 
         let yAxis = d3.svg.axis()
