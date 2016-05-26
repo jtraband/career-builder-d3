@@ -4,8 +4,9 @@
 import { Component, ElementRef } from '@angular/core';
 import { DataSet } from './data-set';
 import { HBarChartOptions, VBarChartOptions } from './interfaces';
-import { VerticalGroupedBarChartComponent } from './vertical-bar-chart.component';
+import { VerticalBarChartComponent } from './vertical-bar-chart.component';
 import { HorizontalBarChartComponent } from './horizontal-bar-chart.component';
+import { HorizontalBarChart2 } from './horizontal-bar-chart-2';
 
 declare var d3: any;
 
@@ -17,8 +18,9 @@ declare var d3: any;
         <vertical-bar-chart *ngIf="companyInfo" [data]="companyInfo.data" [options]="companyInfo.options" style="display: inline-block"></vertical-bar-chart>
         <div></div>
         <vertical-bar-chart *ngIf="militaryInfo" [data]="militaryInfo.data" [options]="militaryInfo.options" style="display: inline-block"></vertical-bar-chart>
+        <div class="hbar2"></div>
      `,
-     directives: [HorizontalBarChartComponent, VerticalGroupedBarChartComponent]
+     directives: [HorizontalBarChartComponent, VerticalBarChartComponent]
 
 })
 export class AppComponent {
@@ -36,7 +38,14 @@ export class AppComponent {
         setTimeout( () => {
             this.initMilitaryData();
             this.initCompanyData();
+            this.drawHBar2();
         }, 0);
+    }
+
+    drawHBar2() {
+        let chart = new HorizontalBarChart2();
+        this.companyInfo.options.selector = '.hbar2';
+        chart.draw(this.companyInfo.data, this.companyInfo.options);
     }
 
     initMilitaryData() {
@@ -57,7 +66,7 @@ export class AppComponent {
             height: 300,
             // selector: '.named-bar',
             title: { text: 'Military Data', fontSize: '18px' },
-            margin: { top: 25, right: 10, bottom: 40, left: 30 },
+            margin: { top: 25, right: 30, bottom: 40, left: 30 },
             xAxis: { ticks: 11 }
         };
         this.militaryInfo = { data: dataSet, options: options };

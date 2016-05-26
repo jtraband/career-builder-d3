@@ -3,8 +3,6 @@ import { HBarChartOptions, ChartMargin, ChartTitle, XAxis } from './interfaces';
 
 declare var d3: any;
 
-
-
 export class HorizontalBarChart {
 
     draw(dataSet: DataSet, options: HBarChartOptions) {

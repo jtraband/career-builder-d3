@@ -8,7 +8,7 @@ import { DataSet } from './data-set';
     selector: 'vertical-bar-chart',
     template: `<div id="chart"></div>`
 })
-export class VerticalGroupedBarChartComponent {
+export class VerticalBarChartComponent {
     @Input() data: DataSet;
     @Input() options: VBarChartOptions;
 
