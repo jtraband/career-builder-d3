@@ -6,7 +6,8 @@ import { DataSet } from './data-set';
 import { HBarChartOptions, VBarChartOptions } from './interfaces';
 import { VerticalBarChartComponent } from './vertical-bar-chart.component';
 import { HorizontalBarChartComponent } from './horizontal-bar-chart.component';
-import { HorizontalBarChart2 } from './horizontal-bar-chart-2';
+import { HorizontalBarChart } from './horizontal-bar-chart';
+import { HorizontalBarChartSimple } from './horizontal-bar-chart-simple';
 
 declare var d3: any;
 
@@ -18,6 +19,8 @@ declare var d3: any;
         <vertical-bar-chart *ngIf="companyInfo" [data]="companyInfo.data" [options]="companyInfo.options" style="display: inline-block"></vertical-bar-chart>
         <div></div>
         <vertical-bar-chart *ngIf="militaryInfo" [data]="militaryInfo.data" [options]="militaryInfo.options" style="display: inline-block"></vertical-bar-chart>
+        <horizontal-bar-chart *ngIf="companyInfo" [data]="companyInfo.data" [options]="companyInfo.options" style="display: inline-block"></horizontal-bar-chart>
+       
         <div class="hbar2"></div>
      `,
      directives: [HorizontalBarChartComponent, VerticalBarChartComponent]
@@ -43,9 +46,9 @@ export class AppComponent {
     }
 
     drawHBar2() {
-        let chart = new HorizontalBarChart2();
-        this.companyInfo.options.selector = '.hbar2';
-        chart.draw(this.companyInfo.data, this.companyInfo.options);
+        let chart = new HorizontalBarChartSimple();
+        this.militaryInfo.options.selector = '.hbar2';
+        chart.draw(this.militaryInfo.data, this.militaryInfo.options);
     }
 
     initMilitaryData() {
