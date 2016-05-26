@@ -2,26 +2,28 @@
 // /// <reference path='../typings/browser/definitions/d3/index.d.ts'/>;
 
 import { Component, ElementRef } from '@angular/core';
+import { DataSet } from './data-set';
+import { HorizontalBarChart, HBarChartOptions } from './horizontal-bar-chart';
+import { HorizontalBarChartComponent } from './horizontal-bar-chart.component';
 
 declare var d3: any;
-
-// Ugh... can't get typings correct yet....
-// import * as d3 from 'd3';
-// import * as d3 from 'd3/d3';
-// import * as d3 from 'd3/index';
-
 
 @Component({
     selector: 'my-app',
     template: `
         <h1>D3 Test</h1>
+        <horizontal-bar-chart *ngIf="militaryInfo" [data]="militaryInfo.data" [options]="militaryInfo.options" style="display: inline-block"></horizontal-bar-chart>
+        <div>---------</div>
         <div class="named-bar"></div>
         <div class="other-bars"></div>
-        `
+     `,
+     directives: [HorizontalBarChartComponent]
+
 })
 export class AppComponent {
 
     elementRef: ElementRef;
+    militaryInfo: { data: DataSet, options: HBarChartOptions };
 
     constructor(elementRef: ElementRef) {
         this.elementRef = elementRef;
@@ -30,11 +32,42 @@ export class AppComponent {
 
     ngAfterViewInit() {
         d3.select(this.elementRef.nativeElement).select('h1').style('background-color', 'lightblue');
-        this.barChartNamedXBar();
-        this.barChartGroupedYBar();
-        this.barChartXBar();
-        this.barChartYBar();
+        setTimeout( () => {
+            this.initMilitaryData();
+            // this.hBarChart();
+            // this.barChartNamedXBar();
+            this.barChartGroupedYBar();
+            // this.barChartXBar();
+            // this.barChartYBar();
+        }, 0);
     }
+
+    initMilitaryData() {
+        let dataSet = new DataSet();
+        // dataSet.addColumn( { name: 'label', type: 'string', } );
+        // dataSet.addColumn( { name: 'value', type: 'number' } );
+        dataSet.addColumns(['label', 'value']);
+        dataSet.addRows([
+            [ 'Veteran', 574 ],
+            [ 'No Obligation',  113 ],
+            [ 'Active Duty',  79 ],
+            [ 'Retired Military', 78 ],
+            [ 'Reserve-Drilling', 56 ],
+            [ 'Inactive Reserve', 45 ],
+            [ 'Unfilled', 10 ] ,
+            [ 'Filled', 4 ]
+        ]);
+        let options: HBarChartOptions = {
+            width: 500,
+            height: 300,
+            // selector: '.named-bar',
+            title: { text: 'Military Data', fontSize: '18px' },
+            margin: { top: 25, right: 10, bottom: 20, left: 30 },
+            xAxis: { ticks: 11 }
+        };
+        this.militaryInfo = { data: dataSet, options: options };
+    }
+
 
     barChartGroupedYBar() {
         let margin = { top: 25, right: 10, bottom: 20, left: 30 };
