@@ -1,5 +1,5 @@
 import { DataSet, DataRow, DataColumn  } from './data-set';
-import { HBarChartOptions, ChartTitle, XAxis, YAxis } from './interfaces';
+import { HBarChartOptions, ChartTitle, XAxis  } from './interfaces';
 
 declare var d3: any;
 
@@ -23,8 +23,13 @@ export class HorizontalBarChart {
             .append('g')
             .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-        let colorScale = d3.scale.ordinal()
-            .range(['lightgreen', '#98abc5', '#8a89a6', '#d0743c']);
+        let colorScale: any;
+        if (options.colors) {
+           colorScale = d3.scale.ordinal()
+                .range(options.colors);
+        } else {
+            colorScale = d3.scale.category10();
+        }
 
         let groupNames = dataSet.getGroupNames();
 
@@ -35,6 +40,7 @@ export class HorizontalBarChart {
         let maxValue = d3.max(dataRows, (dr: any) => {
             return d3.max(dr.groups, (group: any) => group.value);
         });
+
         let xScale = d3.scale.linear()
             .range([0, width])
             .domain([0, maxValue]);

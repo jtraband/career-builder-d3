@@ -23,17 +23,13 @@ export class VerticalBarChart {
             .append('g')
             .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-
-        let x0Scale = d3.scale.ordinal()
-            .rangeRoundBands([0, width], .1);
-
-        let x1Scale = d3.scale.ordinal();
-
-        let yScale = d3.scale.linear()
-            .range([height, 0]);
-
-        let colorScale = d3.scale.ordinal()
-            .range(['#98abc5', '#8a89a6', '#d0743c']);
+        let colorScale: any;
+        if (options.colors) {
+           colorScale = d3.scale.ordinal()
+                .range(options.colors);
+        } else {
+            colorScale = d3.scale.category10();
+        }
 
         let groupNames = dataSet.getGroupNames();
 
@@ -41,11 +37,21 @@ export class VerticalBarChart {
             (<any>dr).groups = groupNames.map((name, ix) => { return { name: name, value: dr.values[ix] }; });
         });
 
-        x0Scale.domain(dataRows.map((dr: DataRow) => dr.label));
-        x1Scale.domain(groupNames).rangeRoundBands([0, x0Scale.rangeBand()]);
-        yScale.domain([0, d3.max(dataRows, (dr: any) => {
+        let maxValue = d3.max(dataRows, (dr: any) => {
             return d3.max(dr.groups, (group: any) => group.value);
-        })]);
+        });
+
+        let x0Scale = d3.scale.ordinal()
+            .rangeRoundBands([0, width], .1)
+            .domain(dataRows.map((dr: DataRow) => dr.label));
+
+        let x1Scale = d3.scale.ordinal()
+            .domain(groupNames)
+            .rangeRoundBands([0, x0Scale.rangeBand()]);
+
+        let yScale = d3.scale.linear()
+            .range([height, 0])
+            .domain([0, maxValue]);
 
         let xAxis = d3.svg.axis()
             .scale(x0Scale)
@@ -118,8 +124,8 @@ export class VerticalBarChart {
 
     // from https://bl.ocks.org/mbostock/7555321 
     wrap(textItems: any, width: number) {
-        textItems.each(function() {
-            let  text = d3.select(this);
+        textItems.each(function () {
+            let text = d3.select(this);
             let words = text.text().split(/\s+/).reverse();
             let word: string;
             let line: string[] = [];

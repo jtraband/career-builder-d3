@@ -20,8 +20,6 @@ declare var d3: any;
         <div></div>
         <vertical-bar-chart *ngIf="militaryInfo" [data]="militaryInfo.data" [options]="militaryInfo.options" style="display: inline-block"></vertical-bar-chart>
         <horizontal-bar-chart *ngIf="companyInfo" [data]="companyInfo.data" [options]="companyInfo.options" style="display: inline-block"></horizontal-bar-chart>
-       
-        <div class="hbar2"></div>
      `,
      directives: [HorizontalBarChartComponent, VerticalBarChartComponent]
 
@@ -41,14 +39,8 @@ export class AppComponent {
         setTimeout( () => {
             this.initMilitaryData();
             this.initCompanyData();
-            this.drawHBar2();
-        }, 0);
-    }
 
-    drawHBar2() {
-        let chart = new HorizontalBarChartSimple();
-        this.militaryInfo.options.selector = '.hbar2';
-        chart.draw(this.militaryInfo.data, this.militaryInfo.options);
+        }, 0);
     }
 
     initMilitaryData() {
@@ -70,6 +62,7 @@ export class AppComponent {
             // selector: '.named-bar',
             title: { text: 'Military Data', fontSize: '18px' },
             margin: { top: 25, right: 30, bottom: 40, left: 30 },
+            colors: [ 'lightblue', '#2ca02c' ], // 2nd one ignored because only a single color is needed
             xAxis: { ticks: 11 }
         };
         this.militaryInfo = { data: dataSet, options: options };
@@ -93,7 +86,6 @@ export class AppComponent {
         };
         this.companyInfo = { data: dataSet, options: options };
     }
-
 
 
 }
