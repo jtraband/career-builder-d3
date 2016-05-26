@@ -90,7 +90,7 @@ export class HorizontalBarChart {
             .call(yAxis);
 
         if (options.title) {
-            let titleOptions  = <ChartTitle> _.extend({ fontSize: '20px', textDecoration: 'bold' }, options.title || {});
+            let titleOptions = <ChartTitle>_.extend({ fontSize: '20px', textDecoration: 'bold' }, options.title || {});
             svg.append('text')
                 .attr('x', width / 2)
                 .attr('y', 0 - (margin.top / 2))
