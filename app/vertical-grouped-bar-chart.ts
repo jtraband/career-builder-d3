@@ -1,5 +1,5 @@
 import { DataSet, DataRow, DataColumn  } from './data-set';
-import { VBarChartOptions, ChartTitle } from './interfaces';
+import { VBarChartOptions, ChartTitle, YAxis } from './interfaces';
 
 declare var d3: any;
 
@@ -24,20 +24,16 @@ export class VerticalGroupedBarChart {
             .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
 
-        let x0 = d3.scale.ordinal()
+        let x0Scale = d3.scale.ordinal()
             .rangeRoundBands([0, width], .1);
 
-        let x1 = d3.scale.ordinal();
+        let x1Scale = d3.scale.ordinal();
 
-        let y = d3.scale.linear()
+        let yScale = d3.scale.linear()
             .range([height, 0]);
 
-        let color = d3.scale.ordinal()
+        let colorScale = d3.scale.ordinal()
             .range(['#98abc5', '#8a89a6', '#d0743c']);
-
-        let xAxis = d3.svg.axis()
-            .scale(x0)
-            .orient('bottom');
 
         let groupNames = dataSet.getGroupNames();
 
@@ -45,31 +41,52 @@ export class VerticalGroupedBarChart {
             (<any>dr).groups = groupNames.map((name, ix) => { return { name: name, value: dr.values[ix] }; });
         });
 
-        x0.domain(dataRows.map((dr: DataRow) => dr.label));
-        x1.domain(groupNames).rangeRoundBands([0, x0.rangeBand()]);
-        y.domain([0, d3.max(dataRows, (dr: any) => {
+        x0Scale.domain(dataRows.map((dr: DataRow) => dr.label));
+        x1Scale.domain(groupNames).rangeRoundBands([0, x0Scale.rangeBand()]);
+        yScale.domain([0, d3.max(dataRows, (dr: any) => {
             return d3.max(dr.groups, (group: any) => group.value);
         })]);
+
+        let xAxis = d3.svg.axis()
+            .scale(x0Scale)
+            .orient('bottom');
+
+        let yAxisOptions = <YAxis>_.extend({ ticks: 5 }, options.yAxis || {});
+        let yAxis = d3.svg.axis()
+            .scale(yScale)
+            .orient('left')
+            .ticks(yAxisOptions.ticks);
+
+        // svg.append('g')
+        //     .attr('class', 'axis')
+        //     .attr('transform', 'translate(0,' + height + ')')
+        //     .call(xAxis);
 
         svg.append('g')
             .attr('class', 'x axis')
             .attr('transform', 'translate(0,' + height + ')')
-            .call(xAxis);
+            .call(xAxis)
+            .selectAll('.tick text')
+            .call(this.wrap, x0Scale.rangeBand());
+
+        svg.append('g')
+            .attr('class', 'y axis')
+            .call(yAxis);
 
         let band = svg.selectAll('.band')
             .data(dataRows)
             .enter().append('g')
             .attr('class', 'band')
-            .attr('transform', (dr: DataRow) => 'translate(' + x0(dr.label) + ',0)');
+            .attr('transform', (dr: DataRow) => 'translate(' + x0Scale(dr.label) + ',0)');
 
         band.selectAll('rect')
             .data((d: any) => d.groups)
             .enter().append('rect')
-            .attr('width', x1.rangeBand())
-            .attr('x', (d: any) => x1(d.name))
-            .attr('y', (d: any) => y(d.value))
-            .attr('height', (d: any) => height - y(d.value))
-            .style('fill', (d: any) => color(d.name));
+            .attr('width', x1Scale.rangeBand())
+            .attr('x', (d: any) => x1Scale(d.name))
+            .attr('y', (d: any) => yScale(d.value))
+            .attr('height', (d: any) => height - yScale(d.value))
+            .style('fill', (d: any) => colorScale(d.name));
 
         let legend = svg.selectAll('.legend')
             .data(groupNames)
@@ -80,7 +97,7 @@ export class VerticalGroupedBarChart {
             .attr('x', width - 18)
             .attr('width', 18)
             .attr('height', 18)
-            .style('fill', color);
+            .style('fill', colorScale);
 
         legend.append('text')
             .attr('x', width - 24)
@@ -100,5 +117,29 @@ export class VerticalGroupedBarChart {
                 .text(titleOptions.text);
 
         }
+    }
+
+    wrap(text, width) {
+        text.each(function () {
+            var text = d3.select(this),
+                words = text.text().split(/\s+/).reverse(),
+                word,
+                line = [],
+                lineNumber = 0,
+                lineHeight = 1.1, // ems
+                y = text.attr("y"),
+                dy = parseFloat(text.attr("dy")),
+                tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+            while (word = words.pop()) {
+                line.push(word);
+                tspan.text(line.join(" "));
+                if (tspan.node().getComputedTextLength() > width) {
+                    line.pop();
+                    tspan.text(line.join(" "));
+                    line = [word];
+                    tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+                }
+            }
+        });
     }
 }

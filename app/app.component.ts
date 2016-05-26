@@ -47,7 +47,7 @@ export class AppComponent {
             [ 'No Obligation',  113 ],
             [ 'Active Duty',  79 ],
             [ 'Retired Military', 78 ],
-            [ 'Reserve-Drilling', 56 ],
+            [ 'Reserve - Drilling', 56 ],
             [ 'Inactive Reserve', 45 ],
             [ 'Unfilled', 10 ] ,
             [ 'Filled', 4 ]
@@ -57,7 +57,7 @@ export class AppComponent {
             height: 300,
             // selector: '.named-bar',
             title: { text: 'Military Data', fontSize: '18px' },
-            margin: { top: 25, right: 10, bottom: 20, left: 30 },
+            margin: { top: 25, right: 10, bottom: 40, left: 30 },
             xAxis: { ticks: 11 }
         };
         this.militaryInfo = { data: dataSet, options: options };
@@ -76,8 +76,8 @@ export class AppComponent {
             height: 300,
             // selector: '.named-bar',
             title: { text: 'Company Data', fontSize: '18px' },
-            margin: { top: 25, right: 10, bottom: 20, left: 30 },
-            yAxis: { ticks: 11 }
+            margin: { top: 25, right: 10, bottom: 20, left: 50 },
+            yAxis: { ticks: 5 }
         };
         this.companyInfo = { data: dataSet, options: options };
     }
