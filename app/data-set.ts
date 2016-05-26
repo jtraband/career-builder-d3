@@ -1,16 +1,24 @@
-export interface DataColumn {
-    name: string;
-    type: string;
-    label?: string;
+export class DataColumn {
+    constructor(public name: string, public type?: string, public label?: string) {
+
+    }
 }
 
-export interface DataRow {
+export class DataRow {
+    constructor(public label: string, public values: any[]) {
+
+    }
+
+    // if only a single value
+    public get value() {
+        return this.values[0];
+    }
 
 }
 
 export class DataSet {
     private _dataColumns: DataColumn[] = [];
-    private _dataRows: any[][] = [];
+    private _dataRows: DataRow[] = [];
 
     constructor() {
 
@@ -25,40 +33,51 @@ export class DataSet {
     }
 
 
-    addColumn(col: DataColumn | string) {
-        let dc: DataColumn;
-        if (typeof col === 'string') {
-            dc = <DataColumn> { name: col };
-        } else {
-            dc = <DataColumn> col;
-        }
-        this._dataColumns.push(dc);
+    addColumn(columnName: string) {
+        let dc = new DataColumn(columnName);
+        this.addDataColumn(dc);
     }
 
-    addColumns(cols: string[] | DataColumn[]) {
-        let tmps = <any[]> cols;
-        tmps.forEach(c => this.addColumn(c));
+    addColumns(columnNames: string[]) {
+        columnNames.forEach(c => this.addColumn(c));
     }
 
+    addDataColumn(dataColumn: DataColumn) {
+        return this._dataColumns.push(dataColumn);
+    }
+
+    addDataColumns(dataColumns: DataColumn[]) {
+        return dataColumns.forEach(dc => this.addDataColumn(dc));
+    }
 
     addRow(row: any[]) {
-        this._dataRows.push(row);
+        let dr = new DataRow(row[0], row.slice(1));
+        this.addDataRow(dr);
     }
 
     addRows(rows: any[][] ) {
-        this._dataRows.push(...rows);
+        rows.forEach(r => this.addRow(r));
     }
 
-    transformToDataItems() {
-        let dataItems = this._dataRows.map((dataRow) => {
-            let dataItem = {};
-            dataRow.forEach( (item, ix)  => {
-                let dc = this._dataColumns[ix];
-                dataItem[dc.name] = item;
-            });
-            return dataItem;
-        });
-        return dataItems;
+    addDataRow(dataRow: DataRow) {
+        this._dataRows.push(dataRow);
     }
+
+    addDataRows(dataRows: DataRow[]) {
+        dataRows.forEach(dr => this.addDataRow(dr));
+    }
+
+
+    // transformToDataItems() {
+    //     let dataItems = this._dataRows.map((dataRow) => {
+    //         let dataItem = {};
+    //         dataRow.forEach( (item, ix)  => {
+    //             let dc = this._dataColumns[ix];
+    //             dataItem[dc.name] = item;
+    //         });
+    //         return dataItem;
+    //     });
+    //     return dataItems;
+    // }
 
 }

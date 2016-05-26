@@ -1,4 +1,4 @@
-import { DataSet  } from './data-set';
+import { DataSet, DataRow, DataColumn  } from './data-set';
 import { ChartMargin, ChartTitle, XAxis } from './interfaces';
 
 declare var d3: any;
@@ -10,12 +10,12 @@ export interface HBarChartOptions {
     title?: ChartTitle;
     xAxis?: XAxis;
     margin?: ChartMargin;
-    // labelsLocation?: string; // in-bar; in-margin 
+
 }
 
 export class HorizontalBarChart {
 
-    draw(data: DataSet, options: HBarChartOptions) {
+    draw(dataSet: DataSet, options: HBarChartOptions) {
 
         let margin = options.margin;
 
@@ -30,9 +30,10 @@ export class HorizontalBarChart {
             .append('g')
             .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-        let dataItems = data.transformToDataItems();
-        let max = d3.max(dataItems, (d: any) => {
-            return d.value;
+        let dataRows = dataSet.dataRows;
+
+        let max = d3.max(dataRows, (dr: DataRow) => {
+            return dr.values[0];
         });
 
         let xScale = d3.scale.linear()
@@ -40,22 +41,22 @@ export class HorizontalBarChart {
             .range([0, width]);
 
         let yScale = d3.scale.ordinal()
-            .domain(dataItems.map((d: any) => d.value))
+            .domain(dataRows.map((dr: DataRow) => dr.values[0]))
             .rangeRoundBands([0, height]);
 
         svg.selectAll('rect')
-            .data(dataItems)
+            .data(dataRows)
             .enter()
             .append('rect')
-            .attr('x', (d: number) => {
+            .attr('x', (d: any) => {
                 return 0;
             })
-            .attr('y', (d: any, i: number) => {
+            .attr('y', (dr: DataRow, i: number) => {
                 // return i * (height / dataset.length);
-                return yScale(d.value) + 5;
+                return yScale(dr.values[0]) + 5;
             })
-            .attr('width', (d: any) => {
-                return xScale(d.value);
+            .attr('width', (dr: DataRow) => {
+                return xScale(dr.values[0]);
             })
             // .attr('height', height / dataset.length - barPadding)
             .attr('height', yScale.rangeBand() - 10)
@@ -63,16 +64,16 @@ export class HorizontalBarChart {
 
         // in band labels    
         svg.selectAll('text')
-            .data(dataItems)
+            .data(dataRows)
             .enter()
             .append('text')
-            .text((d: any) => d.label)
+            .text((dr: DataRow) => dr.label)
             .attr('x', (d: any) => {
                 return 5; // margin from the left side of the current bar.
             })
-            .attr('y', (d: any, i: number) => {
+            .attr('y', (dr: DataRow, i: number) => {
                 // return i * (height / dataset.length) + barPadding + 11;
-                return yScale(d.value) + (yScale.rangeBand() / 2) + 5;
+                return yScale(dr.values[0]) + (yScale.rangeBand() / 2) + 5;
             })
             .attr('font-size', '11px')
             .attr('fill', 'black')
@@ -91,8 +92,7 @@ export class HorizontalBarChart {
 
         let yAxis = d3.svg.axis()
             .scale(yScale)
-            .orient('left')
-            // .ticks(5);
+            .orient('left');
         svg.append('g')
             .attr('class', 'axis')
             .call(yAxis);
