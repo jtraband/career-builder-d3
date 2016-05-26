@@ -16,10 +16,10 @@ export interface VBarChartOptions extends ChartOptions {
 }
 
 export interface ChartMargin {
-        top: number;
-        right: number;
-        bottom: number;
-        left: number;
+    top: number;
+    right: number;
+    bottom: number;
+    left: number;
 }
 
 export interface ChartTitle {

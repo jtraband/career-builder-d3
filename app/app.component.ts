@@ -1,13 +1,8 @@
-// /// <reference path='../typings/browser.d.ts' />
-// /// <reference path='../typings/browser/definitions/d3/index.d.ts'/>;
-
 import { Component, ElementRef } from '@angular/core';
 import { DataSet } from './data-set';
 import { HBarChartOptions, VBarChartOptions } from './interfaces';
 import { VerticalBarChartComponent } from './vertical-bar-chart.component';
 import { HorizontalBarChartComponent } from './horizontal-bar-chart.component';
-import { HorizontalBarChart } from './horizontal-bar-chart';
-import { HorizontalBarChartSimple } from './horizontal-bar-chart-simple';
 
 declare var d3: any;
 
@@ -15,11 +10,15 @@ declare var d3: any;
     selector: 'my-app',
     template: `
         <h1>D3 Test</h1>
-        <horizontal-bar-chart *ngIf="militaryInfo" [data]="militaryInfo.data" [options]="militaryInfo.options" style="display: inline-block"></horizontal-bar-chart>
-        <vertical-bar-chart *ngIf="companyInfo" [data]="companyInfo.data" [options]="companyInfo.options" style="display: inline-block"></vertical-bar-chart>
+        <horizontal-bar-chart *ngIf="militaryInfo"
+             [data]="militaryInfo.data" [options]="militaryInfo.options" style="display: inline-block"></horizontal-bar-chart>
+        <vertical-bar-chart *ngIf="companyInfo" 
+            [data]="companyInfo.data" [options]="companyInfo.options" style="display: inline-block"></vertical-bar-chart>
         <div></div>
-        <vertical-bar-chart *ngIf="militaryInfo" [data]="militaryInfo.data" [options]="militaryInfo.options" style="display: inline-block"></vertical-bar-chart>
-        <horizontal-bar-chart *ngIf="companyInfo" [data]="companyInfo.data" [options]="companyInfo.options" style="display: inline-block"></horizontal-bar-chart>
+        <vertical-bar-chart *ngIf="militaryInfo" 
+            [data]="militaryInfo.data" [options]="militaryInfo.options" style="display: inline-block"></vertical-bar-chart>
+        <horizontal-bar-chart *ngIf="companyInfo" 
+            [data]="companyInfo.data" [options]="companyInfo.options" style="display: inline-block"></horizontal-bar-chart>
      `,
      directives: [HorizontalBarChartComponent, VerticalBarChartComponent]
 
@@ -39,7 +38,6 @@ export class AppComponent {
         setTimeout( () => {
             this.initMilitaryData();
             this.initCompanyData();
-
         }, 0);
     }
 
