@@ -10,7 +10,7 @@ export interface HBarChartOptions {
     title?: ChartTitle;
     xAxis?: XAxis;
     margin?: ChartMargin;
-    labelsLocation?: string; // in-bar; in-margin 
+    // labelsLocation?: string; // in-bar; in-margin 
 }
 
 export class HorizontalBarChart {
