@@ -28,6 +28,7 @@ export interface ChartTitle {
     textDecoration?: string;
 }
 
+// not yet implemented
 export interface ChartLegend {
     location: string;
 }

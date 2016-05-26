@@ -4,7 +4,7 @@
 import { Component, ElementRef } from '@angular/core';
 import { DataSet } from './data-set';
 import { HBarChartOptions, VBarChartOptions } from './interfaces';
-import { VerticalGroupedBarChartComponent } from './vertical-grouped-bar-chart.component';
+import { VerticalGroupedBarChartComponent } from './vertical-bar-chart.component';
 import { HorizontalBarChartComponent } from './horizontal-bar-chart.component';
 
 declare var d3: any;

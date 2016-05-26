@@ -4,6 +4,7 @@ import { HorizontalBarChart } from './horizontal-bar-chart';
 import { HBarChartOptions } from './interfaces';
 import { DataSet } from './data-set';
 
+// Does not yet support groups.
 @Component({
     selector: 'horizontal-bar-chart',
     template: `<div id="chart"></div>`

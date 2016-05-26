@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, AfterViewInit, ElementRef }   from '@angular/core';
 
-import { VerticalGroupedBarChart } from './vertical-grouped-bar-chart';
+import { VerticalBarChart } from './vertical-bar-chart';
 import { VBarChartOptions } from './interfaces';
 import { DataSet } from './data-set';
 
@@ -22,7 +22,7 @@ export class VerticalGroupedBarChartComponent {
 
     drawChart() {
         let div = this._elementRef.nativeElement.firstElementChild;
-        let chart = new VerticalGroupedBarChart();
+        let chart = new VerticalBarChart();
         this.options.selector = div;
         chart.draw(this.data, this.options);
     }

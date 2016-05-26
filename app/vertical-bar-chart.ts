@@ -3,8 +3,8 @@ import { VBarChartOptions, ChartTitle, YAxis } from './interfaces';
 
 declare var d3: any;
 
-
-export class VerticalGroupedBarChart {
+// handles groups as well
+export class VerticalBarChart {
 
     draw(dataSet: DataSet, options: VBarChartOptions) {
 
@@ -57,11 +57,6 @@ export class VerticalGroupedBarChart {
             .orient('left')
             .ticks(yAxisOptions.ticks);
 
-        // svg.append('g')
-        //     .attr('class', 'axis')
-        //     .attr('transform', 'translate(0,' + height + ')')
-        //     .call(xAxis);
-
         svg.append('g')
             .attr('class', 'x axis')
             .attr('transform', 'translate(0,' + height + ')')
@@ -88,23 +83,25 @@ export class VerticalGroupedBarChart {
             .attr('height', (d: any) => height - yScale(d.value))
             .style('fill', (d: any) => colorScale(d.name));
 
-        let legend = svg.selectAll('.legend')
-            .data(groupNames)
-            .enter().append('g')
-            .attr('class', 'legend')
-            .attr('transform', (d: any, i: number) => 'translate(0,' + i * 20 + ')');
-        legend.append('rect')
-            .attr('x', width - 18)
-            .attr('width', 18)
-            .attr('height', 18)
-            .style('fill', colorScale);
-
-        legend.append('text')
-            .attr('x', width - 24)
-            .attr('y', 9)
-            .attr('dy', '.35em')
-            .style('text-anchor', 'end')
-            .text((d: any) => d);
+        // don't bother with legends if only one group
+        if (groupNames.length > 1) {
+            let legend = svg.selectAll('.legend')
+                .data(groupNames)
+                .enter().append('g')
+                .attr('class', 'legend')
+                .attr('transform', (d: any, i: number) => 'translate(0,' + i * 20 + ')');
+            legend.append('rect')
+                .attr('x', width - 18)
+                .attr('width', 18)
+                .attr('height', 18)
+                .style('fill', colorScale);
+            legend.append('text')
+                .attr('x', width - 24)
+                .attr('y', 9)
+                .attr('dy', '.35em')
+                .style('text-anchor', 'end')
+                .text((d: any) => d);
+        }
 
         if (options.title) {
             let titleOptions = <ChartTitle>_.extend({ fontSize: '20px', textDecoration: 'bold' }, options.title || {});
@@ -119,27 +116,30 @@ export class VerticalGroupedBarChart {
         }
     }
 
-    wrap(text, width) {
-        text.each(function () {
-            var text = d3.select(this),
-                words = text.text().split(/\s+/).reverse(),
-                word,
-                line = [],
-                lineNumber = 0,
-                lineHeight = 1.1, // ems
-                y = text.attr("y"),
-                dy = parseFloat(text.attr("dy")),
-                tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+    // from https://bl.ocks.org/mbostock/7555321 
+    wrap(textItems: any, width: number) {
+        textItems.each(function() {
+            let  text = d3.select(this);
+            let words = text.text().split(/\s+/).reverse();
+            let word: string;
+            let line: string[] = [];
+            let lineNumber = 0;
+            let lineHeight = 1.1; // ems
+            let y = text.attr('y');
+            let dy = parseFloat(text.attr('dy'));
+            let tspan = text.text(null).append('tspan').attr('x', 0).attr('y', y).attr('dy', dy + 'em');
             while (word = words.pop()) {
                 line.push(word);
-                tspan.text(line.join(" "));
+                tspan.text(line.join(' '));
                 if (tspan.node().getComputedTextLength() > width) {
                     line.pop();
-                    tspan.text(line.join(" "));
+                    tspan.text(line.join(' '));
                     line = [word];
-                    tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+                    tspan = text.append('tspan').attr('x', 0).attr('y', y).attr('dy', ++lineNumber * lineHeight + dy + 'em').text(word);
                 }
             }
         });
     }
+
+
 }
