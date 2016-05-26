@@ -1,6 +1,8 @@
 export class DataColumn {
     constructor(public name: string, public type?: string, public label?: string) {
-
+        if (!label) {
+            this.label = this.name;
+        }
     }
 }
 
@@ -30,6 +32,14 @@ export class DataSet {
 
     get dataRows() {
         return this._dataRows;
+    }
+
+    getGroupNames() {
+        return this._dataColumns.map( dc => dc.name);
+    }
+
+    getGroupLabels() {
+        return this._dataColumns.map( dc => dc.label);
     }
 
 
