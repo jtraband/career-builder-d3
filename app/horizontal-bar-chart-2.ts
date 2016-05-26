@@ -23,13 +23,12 @@ export class HorizontalBarChart2 {
             .append('g')
             .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-        let y0Scale = d3.scale.ordinal()
-            .rangeRoundBands([height, 0], .1);
-
-        let y1Scale = d3.scale.ordinal();
-
         let xScale = d3.scale.linear()
             .range([0, width]);
+
+        let y0Scale = d3.scale.ordinal()
+            .rangeRoundBands([0, height], .1);
+        let y1Scale = d3.scale.ordinal();
 
         let colorScale = d3.scale.ordinal()
             .range(['#98abc5', '#8a89a6', '#d0743c']);
@@ -40,32 +39,32 @@ export class HorizontalBarChart2 {
             (<any>dr).groups = groupNames.map((name, ix) => { return { name: name, value: dr.values[ix] }; });
         });
 
+        let maxValue = d3.max(dataRows, (dr: any) => {
+            return d3.max(dr.groups, (group: any) => group.value);
+        });
+        xScale.domain([0, maxValue]);
         y0Scale.domain(dataRows.map((dr: DataRow) => dr.label));
         y1Scale.domain(groupNames).rangeRoundBands([0, y0Scale.rangeBand()]);
-        xScale.domain([0, d3.max(dataRows, (dr: any) => {
-            return d3.max(dr.groups, (group: any) => group.value);
-        })]);
 
-        let yAxis = d3.svg.axis()
-            .scale(y0Scale)
-            .orient('left');
 
         let xAxisOptions = <XAxis>_.extend({ ticks: 5 }, options.xAxis || {});
         let xAxis = d3.svg.axis()
             .scale(xScale)
             .orient('bottom')
             .ticks(xAxisOptions.ticks);
-
-        svg.append('g')
-            .attr('class', 'y axis')
-            .call(yAxis)
-            // .selectAll('.tick text')
-            // .call(this.wrap, y0Scale.rangeBand());
-
         svg.append('g')
             .attr('class', 'x axis')
             .attr('transform', 'translate(0,' + height + ')')
             .call(xAxis);
+
+        let yAxis = d3.svg.axis()
+            .scale(y0Scale)
+            .orient('left');
+        svg.append('g')
+            .attr('class', 'y axis')
+            .call(yAxis)
+        // .selectAll('.tick text')
+        // .call(this.wrap, y0Scale.rangeBand());
 
         let band = svg.selectAll('.band')
             .data(dataRows)
@@ -76,10 +75,10 @@ export class HorizontalBarChart2 {
         band.selectAll('rect')
             .data((d: any) => d.groups)
             .enter().append('rect')
-            .attr('height', y1Scale.rangeBand())
-            .attr('y', (d: any) => y1Scale(d.name))
             .attr('x', (d: any) => 0)
+            .attr('y', (d: any) => y1Scale(d.name))
             .attr('width', (d: any) => xScale(d.value))
+            .attr('height', y1Scale.rangeBand())
             .style('fill', (d: any) => colorScale(d.name));
 
         // don't bother with legends if only one group
@@ -117,8 +116,8 @@ export class HorizontalBarChart2 {
 
     // from https://bl.ocks.org/mbostock/7555321 
     wrap(textItems: any, width: number) {
-        textItems.each(function() {
-            let  text = d3.select(this);
+        textItems.each(function () {
+            let text = d3.select(this);
             let words = text.text().split(/\s+/).reverse();
             let word: string;
             let line: string[] = [];
