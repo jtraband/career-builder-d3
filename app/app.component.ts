@@ -10,6 +10,9 @@ declare var d3: any;
     selector: 'my-app',
     template: `
         <h1>D3 Test</h1>
+        <div>
+            <button type="button" class="btn btn-primary" (click)="updateMilitaryInfo()" >Update Military Info</button>
+        </div>
         <horizontal-bar-chart *ngIf="militaryInfo"
              [data]="militaryInfo.data" [options]="militaryInfo.options" style="display: inline-block"></horizontal-bar-chart>
         <vertical-bar-chart *ngIf="companyInfo" 
@@ -19,6 +22,7 @@ declare var d3: any;
             [data]="militaryInfo.data" [options]="militaryInfo.options" style="display: inline-block"></vertical-bar-chart>
         <horizontal-bar-chart *ngIf="companyInfo" 
             [data]="companyInfo.data" [options]="companyInfo.options" style="display: inline-block"></horizontal-bar-chart>
+                    
      `,
      directives: [HorizontalBarChartComponent, VerticalBarChartComponent]
 
@@ -64,6 +68,12 @@ export class AppComponent {
             xAxis: { ticks: 11 }
         };
         this.militaryInfo = { data: dataSet, options: options };
+    }
+
+    updateMilitaryInfo() {
+        let row3 = this.militaryInfo.data.dataRows[3];
+        row3.values[0] = row3.values[0] + 10;
+        this.militaryInfo.data.markChanged();
     }
 
     initCompanyData() {

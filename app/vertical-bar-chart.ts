@@ -15,6 +15,8 @@ export class VerticalBarChart {
         let width = options.width - margin.left - margin.right;
         let height = options.height - margin.top - margin.bottom;
 
+        d3.select(options.selector).selectAll('*').remove();
+
         // define svg as a G element that translates the origin to the top-left corner of the chart area.
         let svg = d3.select(options.selector)
             .append('svg')

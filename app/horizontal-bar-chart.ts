@@ -4,7 +4,7 @@ import { HBarChartOptions, ChartTitle, XAxis  } from './interfaces';
 declare var d3: any;
 
 // handles groups as well
-export class HorizontalBarChart {
+export class HorizontalBarChart  {
 
     draw(dataSet: DataSet, options: HBarChartOptions) {
 
@@ -14,6 +14,8 @@ export class HorizontalBarChart {
 
         let width = options.width - margin.left - margin.right;
         let height = options.height - margin.top - margin.bottom;
+
+        d3.select(options.selector).selectAll('*').remove();
 
         // define svg as a G element that translates the origin to the top-left corner of the chart area.
         let svg = d3.select(options.selector)

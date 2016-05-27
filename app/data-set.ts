@@ -21,9 +21,10 @@ export class DataRow {
 export class DataSet {
     private _dataColumns: DataColumn[] = [];
     private _dataRows: DataRow[] = [];
+    public revNumber: number;
 
     constructor() {
-
+        this.revNumber = 0;
     }
 
     get dataColumns() {
@@ -53,6 +54,7 @@ export class DataSet {
     }
 
     addDataColumn(dataColumn: DataColumn) {
+        this.updateRevNumber();
         return this._dataColumns.push(dataColumn);
     }
 
@@ -65,16 +67,26 @@ export class DataSet {
         this.addDataRow(dr);
     }
 
+
     addRows(rows: any[][] ) {
         rows.forEach(r => this.addRow(r));
     }
 
     addDataRow(dataRow: DataRow) {
         this._dataRows.push(dataRow);
+        this.updateRevNumber();
     }
 
     addDataRows(dataRows: DataRow[]) {
         dataRows.forEach(dr => this.addDataRow(dr));
+    }
+
+    markChanged() {
+        this.updateRevNumber();
+    }
+
+    private updateRevNumber() {
+        this.revNumber = Date.now();
     }
 
 }
