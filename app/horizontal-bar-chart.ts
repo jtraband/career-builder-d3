@@ -126,34 +126,8 @@ export class HorizontalBarChart  {
 
         D3Fns.drawTitle(svg, settings);
 
-
-
     }
 
-    // from https://bl.ocks.org/mbostock/7555321 
-    wrap(textItems: any, width: number) {
-        textItems.each(function () {
-            let text = d3.select(this);
-            let words = text.text().split(/\s+/).reverse();
-            let word: string;
-            let line: string[] = [];
-            let lineNumber = 0;
-            let lineHeight = 1.1; // ems
-            let y = text.attr('y');
-            let dy = parseFloat(text.attr('dy'));
-            let tspan = text.text(null).append('tspan').attr('x', 0).attr('y', y).attr('dy', dy + 'em');
-            while (word = words.pop()) {
-                line.push(word);
-                tspan.text(line.join(' '));
-                if (tspan.node().getComputedTextLength() > width) {
-                    line.pop();
-                    tspan.text(line.join(' '));
-                    line = [word];
-                    tspan = text.append('tspan').attr('x', 0).attr('y', y).attr('dy', ++lineNumber * lineHeight + dy + 'em').text(word);
-                }
-            }
-        });
-    }
 
 
 }
