@@ -5,7 +5,9 @@ export interface ChartOptions {
     title?: ChartTitle;
     margin?: ChartMargin;
     colors?: any[];
+    // calculated
 }
+
 
 export interface HBarChartOptions extends ChartOptions {
     xAxis?: XAxis;

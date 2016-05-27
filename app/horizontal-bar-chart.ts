@@ -1,5 +1,6 @@
 import { DataSet, DataRow, DataColumn  } from './data-set';
 import { HBarChartOptions, ChartTitle, XAxis, YAxis  } from './interfaces';
+import { D3Fns, ChartSettings } from './d3-fns';
 
 declare var d3: any;
 
@@ -10,28 +11,11 @@ export class HorizontalBarChart  {
 
         let dataRows = dataSet.dataRows;
 
-        let margin = options.margin;
+        let settings = new ChartSettings(options);
+        let widthInner = settings.widthInner;
+        let heightInner = settings.heightInner;
 
-        let width = options.width - margin.left - margin.right;
-        let height = options.height - margin.top - margin.bottom;
-
-        d3.select(options.selector).selectAll('*').remove();
-
-        // define svg as a G element that translates the origin to the top-left corner of the chart area.
-        let svg = d3.select(options.selector)
-            .append('svg')
-            .attr('width', width + margin.left + margin.right)
-            .attr('height', height + margin.top + margin.bottom)
-            .append('g')
-            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
-        let colorScale: any;
-        if (options.colors) {
-           colorScale = d3.scale.ordinal()
-                .range(options.colors);
-        } else {
-            colorScale = d3.scale.category10();
-        }
+        let svg = D3Fns.initializeSvg(settings);
 
         let groupNames = dataSet.getGroupNames();
 
@@ -39,16 +23,17 @@ export class HorizontalBarChart  {
             (<any>dr).groups = groupNames.map((name, ix) => { return { name: name, value: dr.values[ix] }; });
         });
 
-        let maxValue = d3.max(dataRows, (dr: any) => {
-            return d3.max(dr.groups, (group: any) => group.value);
-        });
+        let maxValue = D3Fns.getMaxValue(dataRows);
+        // let maxValue = d3.max(dataRows, (dr: any) => {
+        //     return d3.max(dr.groups, (group: any) => group.value);
+        // });
 
         let xScale = d3.scale.linear()
-            .range([0, width])
+            .range([0, widthInner])
             .domain([0, maxValue]);
 
         let y0Scale = d3.scale.ordinal()
-            .rangeRoundBands([0, height], .2)
+            .rangeRoundBands([0, heightInner], .2)
             .domain(dataRows.map((dr: DataRow) => dr.label));
 
         let y1Scale = d3.scale.ordinal()
@@ -62,7 +47,7 @@ export class HorizontalBarChart  {
                 .ticks(xAxisOptions.ticks);
             svg.append('g')
                 .attr('class', 'x axis')
-                .attr('transform', 'translate(0,' + height + ')')
+                .attr('transform', 'translate(0,' + heightInner + ')')
                 .call(xAxis);
         }
 
@@ -73,11 +58,10 @@ export class HorizontalBarChart  {
                 // Use the values themselves as the labels on the yAxis
                 yAxisScale = d3.scale.ordinal()
                     .domain(dataRows.map((dr: DataRow) => dr.values[0]))
-                    .rangeRoundBands([0, height]);
+                    .rangeRoundBands([0, heightInner]);
             } else {
                 yAxisScale = y0Scale;
             }
-
 
             let yAxis = d3.svg.axis()
                     .scale(yAxisScale)
@@ -102,7 +86,7 @@ export class HorizontalBarChart  {
             .attr('y', (group: any) => y1Scale(group.name))
             .attr('width', (group: any) => xScale(group.value))
             .attr('height', y1Scale.rangeBand())
-            .style('fill', (group: any) => colorScale(group.name));
+            .style('fill', (group: any) => settings.colorScale(group.name));
 
         if (groupNames.length === 1) {
             // in band labels - only if a single group
@@ -131,29 +115,23 @@ export class HorizontalBarChart  {
                 .attr('class', 'legend')
                 .attr('transform', (d: any, i: number) => 'translate(0,' + i * 20 + ')');
             legend.append('rect')
-                .attr('x', width - 18)
+                .attr('x', widthInner - 18)
                 .attr('width', 18)
                 .attr('height', 18)
-                .style('fill', colorScale);
+                .style('fill', settings.colorScale);
             legend.append('text')
-                .attr('x', width - 24)
+                .attr('x', widthInner - 24)
                 .attr('y', 9)
                 .attr('dy', '.35em')
                 .style('text-anchor', 'end')
                 .text((d: any) => d);
         }
 
-        if (options.title) {
-            let titleOptions = <ChartTitle>_.extend({ fontSize: '20px', textDecoration: 'bold' }, options.title || {});
-            svg.append('text')
-                .attr('x', width / 2)
-                .attr('y', 0 - (margin.top / 2))
-                .attr('text-anchor', 'middle')
-                .style('font-size', titleOptions.fontSize)
-                .style('text-decoration', titleOptions.textDecoration)
-                .text(titleOptions.text);
 
-        }
+        D3Fns.drawTitle(svg, settings);
+
+
+
     }
 
     // from https://bl.ocks.org/mbostock/7555321 

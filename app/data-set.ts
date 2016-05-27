@@ -43,7 +43,6 @@ export class DataSet {
         return this._dataColumns.slice(1).map( dc => dc.label);
     }
 
-
     addColumn(columnName: string) {
         let dc = new DataColumn(columnName);
         this.addDataColumn(dc);
