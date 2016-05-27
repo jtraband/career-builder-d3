@@ -16,17 +16,13 @@ export class HorizontalBarChart  {
         let heightInner = settings.heightInner;
 
         let svg = D3Fns.initializeSvg(settings);
-
-        let groupNames = dataSet.getGroupNames();
-
-        dataRows.forEach((dr: DataRow) => {
-            (<any>dr).groups = groupNames.map((name, ix) => { return { name: name, value: dr.values[ix] }; });
-        });
-
         let maxValue = D3Fns.getMaxValue(dataRows);
         // let maxValue = d3.max(dataRows, (dr: any) => {
         //     return d3.max(dr.groups, (group: any) => group.value);
         // });
+
+        let groupNames = dataSet.createGroups();
+
 
         let xScale = d3.scale.linear()
             .range([0, widthInner])

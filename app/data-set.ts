@@ -35,6 +35,14 @@ export class DataSet {
         return this._dataRows;
     }
 
+    createGroups() {
+        let groupNames = this.getGroupNames();
+        this._dataRows.forEach((dr: DataRow) => {
+            (<any>dr).groups = groupNames.map((name, ix) => { return { name: name, value: dr.values[ix] }; });
+        });
+        return groupNames;
+    }
+
     getGroupNames() {
         return this._dataColumns.slice(1).map( dc => dc.name);
     }
