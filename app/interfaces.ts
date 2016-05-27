@@ -9,9 +9,11 @@ export interface ChartOptions {
 
 export interface HBarChartOptions extends ChartOptions {
     xAxis?: XAxis;
+    yAxis?: YAxis;
 }
 
 export interface VBarChartOptions extends ChartOptions {
+    xAxis?: XAxis;
     yAxis?: YAxis;
 }
 
@@ -33,12 +35,17 @@ export interface ChartLegend {
     location: string;
 }
 
-export interface XAxis {
+export interface ChartAxis {
     ticks?: number;
+    hidden?: boolean;
 }
 
-export interface YAxis {
-    ticks: number;
+export interface XAxis extends ChartAxis {
+
+}
+
+export interface YAxis extends ChartAxis {
+
 }
 
 // can't seem to export a Module with only interfaces.

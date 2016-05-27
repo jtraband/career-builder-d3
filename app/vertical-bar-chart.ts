@@ -1,5 +1,5 @@
 import { DataSet, DataRow, DataColumn  } from './data-set';
-import { VBarChartOptions, ChartTitle, YAxis } from './interfaces';
+import { VBarChartOptions, ChartTitle, XAxis, YAxis } from './interfaces';
 
 declare var d3: any;
 
@@ -27,7 +27,7 @@ export class VerticalBarChart {
 
         let colorScale: any;
         if (options.colors) {
-           colorScale = d3.scale.ordinal()
+            colorScale = d3.scale.ordinal()
                 .range(options.colors);
         } else {
             colorScale = d3.scale.category10();
@@ -59,22 +59,26 @@ export class VerticalBarChart {
             .scale(x0Scale)
             .orient('bottom');
 
+        let xAxisOptions = <XAxis>_.extend({  }, options.xAxis || {});
+        if (!xAxisOptions.hidden) {
+            svg.append('g')
+                .attr('class', 'x axis')
+                .attr('transform', 'translate(0,' + height + ')')
+                .call(xAxis)
+                .selectAll('.tick text')
+                .call(this.wrap, x0Scale.rangeBand());
+        }
+
         let yAxisOptions = <YAxis>_.extend({ ticks: 5 }, options.yAxis || {});
-        let yAxis = d3.svg.axis()
-            .scale(yScale)
-            .orient('left')
-            .ticks(yAxisOptions.ticks);
-
-        svg.append('g')
-            .attr('class', 'x axis')
-            .attr('transform', 'translate(0,' + height + ')')
-            .call(xAxis)
-            .selectAll('.tick text')
-            .call(this.wrap, x0Scale.rangeBand());
-
-        svg.append('g')
-            .attr('class', 'y axis')
-            .call(yAxis);
+        if (!yAxisOptions.hidden) {
+            let yAxis = d3.svg.axis()
+                .scale(yScale)
+                .orient('left')
+                .ticks(yAxisOptions.ticks);
+            svg.append('g')
+                .attr('class', 'y axis')
+                .call(yAxis);
+        }
 
         let band = svg.selectAll('.band')
             .data(dataRows)

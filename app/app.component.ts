@@ -10,9 +10,12 @@ declare var d3: any;
     selector: 'my-app',
     template: `
         <h1>D3 Test</h1>
-        <div>
-            <button type="button" class="btn btn-primary" (click)="updateMilitaryInfo()" >Update Military Info</button>
+        <div style="margin-bottom: 15px">
+            <button type="button" class="btn btn-primary" (click)="onUpdateMilitaryInfo()" >Update Military Info</button>
+            <button type="button" class="btn btn-primary" (click)="onToggleAxis('xAxis')" >Toggle X axis visibility</button>
+            <button type="button" class="btn btn-primary" (click)="onToggleAxis('yAxis')" >Toggle Y axis visibility</button>
         </div>
+        
         <horizontal-bar-chart *ngIf="militaryInfo"
              [data]="militaryInfo.data" [options]="militaryInfo.options" style="display: inline-block"></horizontal-bar-chart>
         <vertical-bar-chart *ngIf="companyInfo" 
@@ -70,11 +73,7 @@ export class AppComponent {
         this.militaryInfo = { data: dataSet, options: options };
     }
 
-    updateMilitaryInfo() {
-        let row3 = this.militaryInfo.data.dataRows[3];
-        row3.values[0] = row3.values[0] + 10;
-        this.militaryInfo.data.markChanged();
-    }
+    
 
     initCompanyData() {
         let dataSet = new DataSet();
@@ -90,10 +89,29 @@ export class AppComponent {
             // selector: '.named-bar',
             title: { text: 'Company Data', fontSize: '18px' },
             margin: { top: 25, right: 10, bottom: 20, left: 50 },
-            yAxis: { ticks: 5 }
+            yAxis: { ticks: 5 },
+
         };
         this.companyInfo = { data: dataSet, options: options };
     }
 
+    onUpdateMilitaryInfo() {
+        let row3 = this.militaryInfo.data.dataRows[3];
+        row3.values[0] = row3.values[0] + 10;
+        this.militaryInfo.data.markChanged();
+    }
 
+    onToggleAxis(axis: string) {
+         this.toggleAxis(this.militaryInfo.options, axis);
+         this.toggleAxis(this.companyInfo.options, axis);
+    }
+
+    toggleAxis(options: any, axis: string) {
+        if (options[axis]) {
+            options[axis].hidden = !options[axis].hidden;
+        } else {
+            options[axis] = { hidden: true };
+        }
+
+    }
 }

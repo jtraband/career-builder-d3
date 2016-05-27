@@ -1,5 +1,5 @@
 import { DataSet, DataRow, DataColumn  } from './data-set';
-import { HBarChartOptions, ChartTitle, XAxis  } from './interfaces';
+import { HBarChartOptions, ChartTitle, XAxis, YAxis  } from './interfaces';
 
 declare var d3: any;
 
@@ -55,33 +55,39 @@ export class HorizontalBarChart  {
             .domain(groupNames).rangeRoundBands([0, y0Scale.rangeBand()]);
 
         let xAxisOptions = <XAxis>_.extend({ ticks: 5 }, options.xAxis || {});
-        let xAxis = d3.svg.axis()
-            .scale(xScale)
-            .orient('bottom')
-            .ticks(xAxisOptions.ticks);
-        svg.append('g')
-            .attr('class', 'x axis')
-            .attr('transform', 'translate(0,' + height + ')')
-            .call(xAxis);
-
-        let yAxisScale: any;
-        if (groupNames.length === 1) {
-            // Use the values themselves as the labels on the yAxis
-            yAxisScale = d3.scale.ordinal()
-                .domain(dataRows.map((dr: DataRow) => dr.values[0]))
-                .rangeRoundBands([0, height]);
-        } else {
-            yAxisScale = y0Scale;
+        if (!xAxisOptions.hidden) {
+            let xAxis = d3.svg.axis()
+                .scale(xScale)
+                .orient('bottom')
+                .ticks(xAxisOptions.ticks);
+            svg.append('g')
+                .attr('class', 'x axis')
+                .attr('transform', 'translate(0,' + height + ')')
+                .call(xAxis);
         }
 
-        let yAxis = d3.svg.axis()
-                .scale(yAxisScale)
-                .orient('left');
-        svg.append('g')
-            .attr('class', 'y axis')
-            .call(yAxis)
-        // .selectAll('.tick text')
-        // .call(this.wrap, y0Scale.rangeBand());
+        let yAxisOptions = <YAxis>_.extend({  }, options.yAxis || {});
+        if (!yAxisOptions.hidden) {
+        let yAxisScale: any;
+            if (groupNames.length === 1) {
+                // Use the values themselves as the labels on the yAxis
+                yAxisScale = d3.scale.ordinal()
+                    .domain(dataRows.map((dr: DataRow) => dr.values[0]))
+                    .rangeRoundBands([0, height]);
+            } else {
+                yAxisScale = y0Scale;
+            }
+
+
+            let yAxis = d3.svg.axis()
+                    .scale(yAxisScale)
+                    .orient('left');
+            svg.append('g')
+                .attr('class', 'y axis')
+                .call(yAxis)
+            // .selectAll('.tick text')
+            // .call(this.wrap, y0Scale.rangeBand());
+        }
 
         let band = svg.selectAll('.band')
             .data(dataRows)
