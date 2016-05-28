@@ -113,12 +113,15 @@ export class HorizontalBarChart  {
                 .attr('width', 18)
                 .attr('height', 18)
                 .style('fill', colorScale);
-            legend.append('text')
+            let tmp = legend.append('text')
                 .attr('x', widthInner - 24)
                 .attr('y', 9)
                 .attr('dy', '.35em')
                 .style('text-anchor', 'end')
                 .text((d: any) => d);
+            if (settings.legend.textStyle.fontSize) {
+                tmp.attr('font-size', legend.textStyle.fontSize);
+            }
         }
 
 

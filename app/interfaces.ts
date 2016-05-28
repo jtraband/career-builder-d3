@@ -5,7 +5,7 @@ export interface ChartOptions {
     title?: ChartTitle;
     margin?: ChartMargin;
     colors?: any[];
-    // calculated
+    legend?: ChartLegend;
 }
 
 
@@ -31,13 +31,14 @@ export interface ChartMargin {
 
 export interface ChartTitle {
     text: string;
-    fontSize?: string;
-    textDecoration?: string;
+    textStyle?: TextStyle;
 }
 
 // not yet implemented
 export interface ChartLegend {
-    location: string;
+    visible?: boolean;
+    textStyle?: TextStyle;
+    location?: 'above' | 'below' | 'top-right' | 'bottom-left';
 }
 
 export interface ChartAxis {
@@ -55,26 +56,37 @@ export interface YAxis extends ChartAxis {
 }
 
 export class DEFAULTS {
-    private static AXIS: ChartAxis = {
+    private static axis: ChartAxis = {
         ticks: 5,
         visible: true
     };
 
-    public static XAXIS: XAxis = DEFAULTS.AXIS;
+    public static xAxis: XAxis = DEFAULTS.axis;
 
-    public static YAXIS: XAxis = DEFAULTS.AXIS;
+    public static yAxis: XAxis = DEFAULTS.axis;
+
+    public static legend: ChartLegend = { visible: true, textStyle: {}, location: 'top-right' };
+
+    public static textStyleTitle: TextStyle = { fontSize: '20px', textDecoration: 'bold' };
+}
+
+export interface TextStyle {
+    fontName?: string;
+    fontSize?: string;
+    textDecoration?: string;
 }
 
 export class ChartSettings {
     // want to distinguish from global innerWidth and innerHeight vars.
     widthInner: number;
     heightInner: number;
-
+    legend: ChartLegend;
 
     constructor(public options: ChartOptions) {
         let margin = options.margin;
         this.widthInner = options.width - margin.left - margin.right;
         this.heightInner = options.height - margin.top - margin.bottom;
+        this.legend = _.defaults(options.legend || {}, DEFAULTS.legend);
     }
 
     public get selector() { return this.options.selector; }
@@ -84,6 +96,7 @@ export class ChartSettings {
     public get width() { return this.options.width; }
     public get colors() { return this.options.colors; }
 
+
 }
 
 export class BarChartSettings extends ChartSettings {
@@ -91,8 +104,8 @@ export class BarChartSettings extends ChartSettings {
     yAxis: YAxis;
     constructor(public options: BarChartOptions) {
         super(options);
-        this.xAxis = <XAxis>_.defaults( options.xAxis || {}, DEFAULTS.XAXIS);
-        this.yAxis = <YAxis>_.defaults( options.yAxis || {}, DEFAULTS.YAXIS);
+        this.xAxis = <XAxis>_.defaults( options.xAxis || {}, DEFAULTS.xAxis);
+        this.yAxis = <YAxis>_.defaults( options.yAxis || {}, DEFAULTS.yAxis);
     }
 
 }

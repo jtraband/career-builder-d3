@@ -1,4 +1,4 @@
-import { ChartTitle, ChartSettings } from './interfaces';
+import { ChartTitle, ChartSettings, TextStyle, DEFAULTS } from './interfaces';
 import { DataSet, DataRow } from './data-set';
 
 declare var d3: any;
@@ -19,7 +19,7 @@ export class D3Fns {
             .attr('transform', 'translate(' + settings.margin.left + ',' + settings.margin.top + ')');
         return svg;
     }
-    
+
     static getColorScale(colors: any[]) {
         if (colors) {
            return d3.scale.ordinal()
@@ -33,14 +33,14 @@ export class D3Fns {
            if (!settings.title) {
                return;
            }
-           let titleOptions = <ChartTitle>_.extend({ fontSize: '20px', textDecoration: 'bold' }, settings.title || {});
+           let textStyle = <TextStyle> _.defaults( settings.title.textStyle || {}, DEFAULTS.textStyleTitle);
             svg.append('text')
                 .attr('x', settings.widthInner / 2)
                 .attr('y', 0 - (settings.margin.top / 2))
                 .attr('text-anchor', 'middle')
-                .style('font-size', titleOptions.fontSize)
-                .style('text-decoration', titleOptions.textDecoration)
-                .text(titleOptions.text);
+                .style('font-size', textStyle.fontSize)
+                .style('text-decoration', textStyle.textDecoration)
+                .text(settings.title.text);
     }
 
     static getMaxValue(dataRows: DataRow[]) {

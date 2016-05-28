@@ -65,7 +65,7 @@ export class AppComponent {
             width: 500,
             height: 300,
             // selector: '.named-bar',
-            title: { text: 'Military Data', fontSize: '18px' },
+            title: { text: 'Military Data', textStyle: { fontSize: '18px' }},
             margin: { top: 25, right: 30, bottom: 40, left: 30 },
             colors: [ 'lightblue', '#2ca02c' ], // 2nd one ignored because only a single color is needed
             xAxis: { ticks: 11 }
@@ -87,7 +87,7 @@ export class AppComponent {
             width: 500,
             height: 300,
             // selector: '.named-bar',
-            title: { text: 'Company Data', fontSize: '18px' },
+            title: { text: 'Company Data', textStyle: { fontSize: '18px' } },
             margin: { top: 25, right: 10, bottom: 20, left: 50 },
             yAxis: { ticks: 5 },
 
