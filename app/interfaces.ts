@@ -34,11 +34,12 @@ export interface ChartTitle {
     textStyle?: TextStyle;
 }
 
+
 // not yet implemented
 export interface ChartLegend {
     visible?: boolean;
     textStyle?: TextStyle;
-    location?: 'above' | 'below' | 'top-right' | 'bottom-left';
+    location?: 'above' | 'below' | 'top-right' | 'bottom-right';
 }
 
 export interface ChartAxis {

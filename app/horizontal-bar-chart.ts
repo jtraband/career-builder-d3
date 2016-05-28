@@ -1,5 +1,5 @@
 import { DataSet, DataRow, DataColumn  } from './data-set';
-import { HBarChartOptions, BarChartSettings  } from './interfaces';
+import { HBarChartOptions, BarChartSettings, ChartLegend, ChartSettings  } from './interfaces';
 import { D3Fns  } from './d3-fns';
 
 declare var d3: any;
@@ -108,7 +108,8 @@ export class HorizontalBarChart  {
                 .data(groupNames)
                 .enter().append('g')
                 .attr('class', 'legend')
-                .attr('transform', (d: any, i: number) => 'translate(0,' + i * 20 + ')');
+                // .attr('transform', (d: any, i: number) => 'translate(0,' + (heightInner - settings.margin.bottom - (i * 20)) + ')');
+                .attr('transform', (d: any, i: number) => 'translate(0,' + this.getLocationOffset(settings, i) + ')');
             legend.append('rect')
                 .attr('x', widthInner - 18)
                 .attr('width', 18)
@@ -130,6 +131,15 @@ export class HorizontalBarChart  {
 
     }
 
-
+    getLocationOffset(settings: ChartSettings, i: number) {
+        let location = settings.legend.location;
+        if (location === 'top-right') {
+            return i * 20;
+        } else if (location === 'bottom-right') {
+            return settings.heightInner - settings.margin.bottom - (i * 20);
+        } else {
+            return i * 20;
+        }
+    }
 
 }

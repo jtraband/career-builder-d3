@@ -91,7 +91,7 @@ export class AppComponent {
             title: { text: 'Company Data', textStyle: { fontSize: '18px' } },
             margin: { top: 25, right: 10, bottom: 20, left: 50 },
             yAxis: { ticks: 5 },
-            legend: { textStyle: { fontSize: '20px' }}
+            legend: { location: 'bottom-right', textStyle: { fontSize: '20px' }}
         };
         this.companyInfo = { data: dataSet, options: options };
     }
