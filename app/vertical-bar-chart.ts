@@ -1,6 +1,6 @@
 import { DataSet, DataRow, DataColumn  } from './data-set';
-import { VBarChartOptions, ChartTitle, XAxis, YAxis } from './interfaces';
-import { D3Fns, ChartSettings } from './d3-fns';
+import { VBarChartOptions, BarChartSettings } from './interfaces';
+import { D3Fns  } from './d3-fns';
 
 declare var d3: any;
 
@@ -11,12 +11,13 @@ export class VerticalBarChart {
 
         let dataRows = dataSet.dataRows;
 
-        let settings = new ChartSettings(options);
+        let settings = new BarChartSettings(options);
         let widthInner = settings.widthInner;
         let heightInner = settings.heightInner;
 
         let svg = D3Fns.initializeSvg(settings);
         let maxValue = D3Fns.getMaxValue(dataRows);
+        let colorScale = D3Fns.getColorScale(settings.colors);
         let groupNames = dataSet.createGroups();
 
         let x0Scale = d3.scale.ordinal()
@@ -35,8 +36,8 @@ export class VerticalBarChart {
             .scale(x0Scale)
             .orient('bottom');
 
-        let xAxisOptions = <XAxis>_.extend({}, options.xAxis || {});
-        if (!xAxisOptions.hidden) {
+        let xAxisOptions = settings.xAxis;
+        if (xAxisOptions.visible) {
             svg.append('g')
                 .attr('class', 'x axis')
                 .attr('transform', 'translate(0,' + heightInner + ')')
@@ -45,8 +46,8 @@ export class VerticalBarChart {
                 .call(D3Fns.wrap, x0Scale.rangeBand());
         }
 
-        let yAxisOptions = <YAxis>_.extend({ ticks: 5 }, options.yAxis || {});
-        if (!yAxisOptions.hidden) {
+        let yAxisOptions = settings.yAxis;
+        if (yAxisOptions.visible) {
             let yAxis = d3.svg.axis()
                 .scale(yScale)
                 .orient('left')
@@ -69,7 +70,7 @@ export class VerticalBarChart {
             .attr('x', (d: any) => x1Scale(d.name))
             .attr('y', (d: any) => yScale(d.value))
             .attr('height', (d: any) => heightInner - yScale(d.value))
-            .style('fill', (d: any) => settings.colorScale(d.name));
+            .style('fill', (d: any) => colorScale(d.name));
 
         // don't bother with legends if only one group
         if (groupNames.length > 1) {
@@ -82,7 +83,7 @@ export class VerticalBarChart {
                 .attr('x', widthInner - 18)
                 .attr('width', 18)
                 .attr('height', 18)
-                .style('fill', settings.colorScale);
+                .style('fill', colorScale);
             legend.append('text')
                 .attr('x', widthInner - 24)
                 .attr('y', 9)

@@ -1,6 +1,6 @@
 import { DataSet, DataRow, DataColumn  } from './data-set';
-import { HBarChartOptions, ChartTitle, XAxis, YAxis  } from './interfaces';
-import { D3Fns, ChartSettings } from './d3-fns';
+import { HBarChartOptions, BarChartSettings  } from './interfaces';
+import { D3Fns  } from './d3-fns';
 
 declare var d3: any;
 
@@ -11,15 +11,13 @@ export class HorizontalBarChart  {
 
         let dataRows = dataSet.dataRows;
 
-        let settings = new ChartSettings(options);
+        let settings = new BarChartSettings(options);
         let widthInner = settings.widthInner;
         let heightInner = settings.heightInner;
 
         let svg = D3Fns.initializeSvg(settings);
         let maxValue = D3Fns.getMaxValue(dataRows);
-        // let maxValue = d3.max(dataRows, (dr: any) => {
-        //     return d3.max(dr.groups, (group: any) => group.value);
-        // });
+        let colorScale = D3Fns.getColorScale(settings.colors);
 
         let groupNames = dataSet.createGroups();
 
@@ -35,8 +33,8 @@ export class HorizontalBarChart  {
         let y1Scale = d3.scale.ordinal()
             .domain(groupNames).rangeRoundBands([0, y0Scale.rangeBand()]);
 
-        let xAxisOptions = <XAxis>_.extend({ ticks: 5 }, options.xAxis || {});
-        if (!xAxisOptions.hidden) {
+        let xAxisOptions = settings.xAxis;
+        if (xAxisOptions.visible) {
             let xAxis = d3.svg.axis()
                 .scale(xScale)
                 .orient('bottom')
@@ -47,9 +45,9 @@ export class HorizontalBarChart  {
                 .call(xAxis);
         }
 
-        let yAxisOptions = <YAxis>_.extend({  }, options.yAxis || {});
-        if (!yAxisOptions.hidden) {
-        let yAxisScale: any;
+        let yAxisOptions = settings.yAxis;
+        if (yAxisOptions.visible) {
+            let yAxisScale: any;
             if (groupNames.length === 1) {
                 // Use the values themselves as the labels on the yAxis
                 yAxisScale = d3.scale.ordinal()
@@ -82,7 +80,7 @@ export class HorizontalBarChart  {
             .attr('y', (group: any) => y1Scale(group.name))
             .attr('width', (group: any) => xScale(group.value))
             .attr('height', y1Scale.rangeBand())
-            .style('fill', (group: any) => settings.colorScale(group.name));
+            .style('fill', (group: any) => colorScale(group.name));
 
         if (groupNames.length === 1) {
             // in band labels - only if a single group
@@ -114,7 +112,7 @@ export class HorizontalBarChart  {
                 .attr('x', widthInner - 18)
                 .attr('width', 18)
                 .attr('height', 18)
-                .style('fill', settings.colorScale);
+                .style('fill', colorScale);
             legend.append('text')
                 .attr('x', widthInner - 24)
                 .attr('y', 9)

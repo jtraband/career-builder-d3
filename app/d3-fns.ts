@@ -1,33 +1,9 @@
-import { ChartTitle, ChartOptions } from './interfaces';
+import { ChartTitle, ChartSettings } from './interfaces';
 import { DataSet, DataRow } from './data-set';
 
 declare var d3: any;
 
-export class ChartSettings implements ChartOptions {
-    // want to distinguish from global innerWidth and innerHeight vars.
-    widthInner: number;
-    heightInner: number;
-    colorScale: any;
-    constructor(public options: ChartOptions) {
-        let margin = options.margin;
-        this.widthInner = options.width - margin.left - margin.right;
-        this.heightInner = options.height - margin.top - margin.bottom;
 
-        if (options.colors) {
-           this.colorScale = d3.scale.ordinal()
-                .range(options.colors);
-        } else {
-            this.colorScale = d3.scale.category10();
-        }
-    }
-
-    public get selector() { return this.options.selector; }
-    public get title() { return this.options.title; }
-    public get margin() { return this.options.margin; }
-    public get height() { return this.options.height; }
-    public get width() { return this.options.width; }
-    public get colors() { return this.options.colors; }
-}
 
 export class D3Fns {
 
@@ -42,6 +18,15 @@ export class D3Fns {
             .append('g')
             .attr('transform', 'translate(' + settings.margin.left + ',' + settings.margin.top + ')');
         return svg;
+    }
+    
+    static getColorScale(colors: any[]) {
+        if (colors) {
+           return d3.scale.ordinal()
+                .range(colors);
+        } else {
+            return d3.scale.category10();
+        }
     }
 
     static drawTitle(svg: any, settings: ChartSettings ) {

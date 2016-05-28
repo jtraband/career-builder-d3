@@ -108,9 +108,9 @@ export class AppComponent {
 
     toggleAxis(options: any, axis: string) {
         if (options[axis]) {
-            options[axis].hidden = !options[axis].hidden;
+            options[axis].visible = !options[axis].visible;
         } else {
-            options[axis] = { hidden: true };
+            options[axis] = { visible: false };
         }
 
     }
