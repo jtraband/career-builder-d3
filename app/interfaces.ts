@@ -87,14 +87,14 @@ export class ChartSettings {
 }
 
 export class BarChartSettings extends ChartSettings {
+    xAxis: XAxis;
+    yAxis: YAxis;
     constructor(public options: BarChartOptions) {
         super(options);
-        options.xAxis = <XAxis>_.defaults( options.xAxis || {}, DEFAULTS.XAXIS);
-        options.yAxis = <YAxis>_.defaults( options.yAxis || {}, DEFAULTS.YAXIS);
+        this.xAxis = <XAxis>_.defaults( options.xAxis || {}, DEFAULTS.XAXIS);
+        this.yAxis = <YAxis>_.defaults( options.yAxis || {}, DEFAULTS.YAXIS);
     }
 
-    public get xAxis() { return this.options.xAxis; }
-    public get yAxis() { return this.options.yAxis; }
 }
 
 
