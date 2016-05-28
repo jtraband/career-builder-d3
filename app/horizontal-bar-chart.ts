@@ -95,6 +95,7 @@ export class HorizontalBarChart  {
                     // 5 below is approx half of 11px font-size;
                      return (y0Scale.rangeBand() / 2) + 5;
                 })
+                // TODO: allow setting text style for in-band text
                 .attr('font-size', '11px')
                 .attr('fill', 'black')
                 .attr('text-anchor', 'left')
@@ -120,7 +121,7 @@ export class HorizontalBarChart  {
                 .style('text-anchor', 'end')
                 .text((d: any) => d);
             if (settings.legend.textStyle.fontSize) {
-                tmp.attr('font-size', legend.textStyle.fontSize);
+                tmp.attr('font-size', settings.legend.textStyle.fontSize);
             }
         }
 

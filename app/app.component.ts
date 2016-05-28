@@ -68,7 +68,8 @@ export class AppComponent {
             title: { text: 'Military Data', textStyle: { fontSize: '18px' }},
             margin: { top: 25, right: 30, bottom: 40, left: 30 },
             colors: [ 'lightblue', '#2ca02c' ], // 2nd one ignored because only a single color is needed
-            xAxis: { ticks: 11 }
+            xAxis: { ticks: 11 },
+
         };
         this.militaryInfo = { data: dataSet, options: options };
     }
@@ -90,7 +91,7 @@ export class AppComponent {
             title: { text: 'Company Data', textStyle: { fontSize: '18px' } },
             margin: { top: 25, right: 10, bottom: 20, left: 50 },
             yAxis: { ticks: 5 },
-
+            legend: { textStyle: { fontSize: '20px' }}
         };
         this.companyInfo = { data: dataSet, options: options };
     }
