@@ -9,16 +9,20 @@ export interface ChartOptions {
 }
 
 
-export interface BarChartOptions extends ChartOptions {
+export interface XYChartOptions extends ChartOptions {
     xAxis?: XAxis;
     yAxis?: YAxis;
 }
 
-export interface HBarChartOptions extends BarChartOptions {
+export interface HBarChartOptions extends XYChartOptions {
 
 }
 
-export interface VBarChartOptions extends BarChartOptions {
+export interface VBarChartOptions extends XYChartOptions {
+
+}
+
+export interface LineChartOptions extends XYChartOptions {
 
 }
 
@@ -39,6 +43,7 @@ export interface ChartTitle {
 export interface ChartLegend {
     visible?: boolean;
     textStyle?: TextStyle;
+    // above, below not yet implemented
     location?: 'above' | 'below' | 'top-right' | 'bottom-right';
 }
 
@@ -103,16 +108,10 @@ export class ChartSettings {
 export class BarChartSettings extends ChartSettings {
     xAxis: XAxis;
     yAxis: YAxis;
-    constructor(public options: BarChartOptions) {
+    constructor(public options: XYChartOptions) {
         super(options);
         this.xAxis = <XAxis>_.defaults( options.xAxis || {}, DEFAULTS.xAxis);
         this.yAxis = <YAxis>_.defaults( options.yAxis || {}, DEFAULTS.yAxis);
     }
-
-}
-
-
-// can't seem to export a Module with only interfaces.
-export class Foo {
 
 }

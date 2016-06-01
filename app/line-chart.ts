@@ -1,13 +1,13 @@
 import { DataSet, DataRow, DataColumn  } from './data-set';
-import { VBarChartOptions, BarChartSettings } from './interfaces';
+import { LineChartOptions, BarChartSettings } from './interfaces';
 import { D3Fns  } from './d3-fns';
 
 declare var d3: any;
 
-// handles groups as well
-export class VerticalBarChart {
 
-    draw(dataSet: DataSet, options: VBarChartOptions) {
+export class LineChart {
+
+    draw(dataSet: DataSet, options: LineChartOptions) {
 
         let dataRows = dataSet.dataRows;
 
@@ -20,21 +20,18 @@ export class VerticalBarChart {
         let colorScale = D3Fns.getColorScale(settings.colors);
         let groupNames = dataSet.createGroups();
 
-        let x0Scale = d3.scale.ordinal()
-            .domain(dataRows.map((dr: DataRow) => dr.label))
-            // TODO: make the '.1' part of options
-            .rangeRoundBands([0, widthInner], .1);
+        let xScale = d3.scale.ordinal()
+            .rangePoints([0, widthInner])
+            .domain(dataRows.map((dr: DataRow) => dr.label));
+             // x.domain(d3.extent(data, function(d) { return d.date; }));
 
-        let x1Scale = d3.scale.ordinal()
-            .domain(groupNames)
-            .rangeRoundBands([0, x0Scale.rangeBand()]);
 
         let yScale = d3.scale.linear()
-            .domain([0, maxValue])
-            .range([heightInner, 0]);
+            .range([heightInner, 0])
+            .domain([0, maxValue]);
 
         let xAxis = d3.svg.axis()
-            .scale(x0Scale)
+            .scale(xScale)
             .orient('bottom');
 
         let xAxisOptions = settings.xAxis;
@@ -44,7 +41,7 @@ export class VerticalBarChart {
                 .attr('transform', 'translate(0,' + heightInner + ')')
                 .call(xAxis)
                 .selectAll('.tick text')
-                .call(D3Fns.wrap, x0Scale.rangeBand());
+                .call(D3Fns.wrap, xScale.rangeBand());
         }
 
         let yAxisOptions = settings.yAxis;
@@ -58,20 +55,36 @@ export class VerticalBarChart {
                 .call(yAxis);
         }
 
-        let band = svg.selectAll('.band')
-            .data(dataRows)
-            .enter().append('g')
-            .attr('class', 'band')
-            .attr('transform', (dr: DataRow) => 'translate(' + x0Scale(dr.label) + ',0)');
+        let lineDefs = dataSet.dataColumns.slice(1).map((dc, ix) => {
+            let colIx = ix;
+            return {
+                name: dc.name,
+                values: dataRows.map(dr => {
+                    return {
+                        name: dr.label,
+                        value: dr.values[colIx]
+                    };
+                })
+            };
+        });
 
-        band.selectAll('rect')
-            .data((d: any) => d.groups)
-            .enter().append('rect')
-            .attr('width', x1Scale.rangeBand())
-            .attr('x', (d: any) => x1Scale(d.name))
-            .attr('y', (d: any) => yScale(d.value))
-            .attr('height', (d: any) => heightInner - yScale(d.value))
-            .style('fill', (d: any) => colorScale(d.name));
+
+        let line = d3.svg.line()
+            .interpolate('linear')
+            .x(function(d: any) { return xScale(d.name); })
+            .y(function(d: any) { return yScale(d.value); });
+
+        let lineDef = svg.selectAll('.line-def')
+            .data(lineDefs)
+            .enter().append('g')
+            .attr('class', 'line-def');
+
+        lineDef.append('path')
+            .attr('class', 'line')
+            .attr('d', (d: any) =>  { return line(d.values); })
+            .style('stroke', (d: any) => { return colorScale(d.name); })
+            .attr('fill', 'none');
+
 
         // don't bother with legends if only one group
         if (groupNames.length > 1) {

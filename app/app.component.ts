@@ -1,8 +1,9 @@
 import { Component, ElementRef } from '@angular/core';
 import { DataSet } from './data-set';
-import { HBarChartOptions, VBarChartOptions } from './interfaces';
+import { HBarChartOptions, VBarChartOptions, LineChartOptions } from './interfaces';
 import { VerticalBarChartComponent } from './vertical-bar-chart.component';
 import { HorizontalBarChartComponent } from './horizontal-bar-chart.component';
+import { LineChartComponent } from './line-chart.component';
 
 declare var d3: any;
 
@@ -25,9 +26,13 @@ declare var d3: any;
             [data]="militaryInfo.data" [options]="militaryInfo.options" style="display: inline-block"></vertical-bar-chart>
         <horizontal-bar-chart *ngIf="companyInfo" 
             [data]="companyInfo.data" [options]="companyInfo.options" style="display: inline-block"></horizontal-bar-chart>
+
+        <div style="margin-top: 10px"></div>
+        <line-chart *ngIf="lineInfo" 
+            [data]="lineInfo.data" [options]="lineInfo.options" style="display: inline-block"></line-chart>                    
                     
      `,
-     directives: [HorizontalBarChartComponent, VerticalBarChartComponent]
+     directives: [HorizontalBarChartComponent, VerticalBarChartComponent, LineChartComponent]
 
 })
 export class AppComponent {
@@ -35,6 +40,7 @@ export class AppComponent {
     elementRef: ElementRef;
     militaryInfo: { data: DataSet, options: HBarChartOptions };
     companyInfo: { data: DataSet, options: VBarChartOptions };
+    lineInfo: { data: DataSet, options: LineChartOptions };
 
     constructor(elementRef: ElementRef) {
         this.elementRef = elementRef;
@@ -45,6 +51,7 @@ export class AppComponent {
         setTimeout( () => {
             this.initMilitaryData();
             this.initCompanyData();
+            this.initLineData();
         }, 0);
     }
 
@@ -74,7 +81,6 @@ export class AppComponent {
         this.militaryInfo = { data: dataSet, options: options };
     }
 
-    
 
     initCompanyData() {
         let dataSet = new DataSet();
@@ -94,6 +100,26 @@ export class AppComponent {
             legend: { location: 'bottom-right', textStyle: { fontSize: '20px' }}
         };
         this.companyInfo = { data: dataSet, options: options };
+    }
+
+    initLineData() {
+        let dataSet = new DataSet();
+        dataSet.addColumns('Year', 'Sales', 'Expenses');
+        dataSet.addRows([
+            ['2013', 1000, 400],
+            ['2014', 1170, 460],
+            ['2015', 660, 1120],
+            ['2016', 1030, 540]
+        ]);
+        let options: LineChartOptions = {
+            width: 500,
+            height: 300,
+            title: { text: 'Line Data', textStyle: { fontSize: '18px' } },
+            margin: { top: 25, right: 10, bottom: 20, left: 50 },
+            yAxis: { ticks: 5 },
+            legend: { location: 'bottom-right', textStyle: { fontSize: '20px' }}
+        };
+        this.lineInfo = { data: dataSet, options: options };
     }
 
     onUpdateMilitaryInfo() {
