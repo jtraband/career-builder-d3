@@ -105,7 +105,7 @@ export class ChartSettings {
 
 }
 
-export class BarChartSettings extends ChartSettings {
+export class XYChartSettings extends ChartSettings {
     xAxis: XAxis;
     yAxis: YAxis;
     constructor(public options: XYChartOptions) {

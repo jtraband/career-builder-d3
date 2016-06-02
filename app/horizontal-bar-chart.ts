@@ -1,5 +1,5 @@
 import { DataSet, DataRow, DataColumn  } from './data-set';
-import { HBarChartOptions, BarChartSettings, ChartLegend, ChartSettings  } from './interfaces';
+import { HBarChartOptions, XYChartSettings   } from './interfaces';
 import { D3Fns  } from './d3-fns';
 
 declare var d3: any;
@@ -11,7 +11,7 @@ export class HorizontalBarChart  {
 
         let dataRows = dataSet.dataRows;
 
-        let settings = new BarChartSettings(options);
+        let settings = new XYChartSettings(options);
         let widthInner = settings.widthInner;
         let heightInner = settings.heightInner;
 
@@ -102,44 +102,10 @@ export class HorizontalBarChart  {
                 .attr('text-anchor', 'center');
         }
 
-        // don't bother with legends if only one group
-        if (groupNames.length > 1) {
-            let legend = svg.selectAll('.legend')
-                .data(groupNames)
-                .enter().append('g')
-                .attr('class', 'legend')
-                // .attr('transform', (d: any, i: number) => 'translate(0,' + (heightInner - settings.margin.bottom - (i * 20)) + ')');
-                .attr('transform', (d: any, i: number) => 'translate(0,' + this.getLocationOffset(settings, i) + ')');
-            legend.append('rect')
-                .attr('x', widthInner - 18)
-                .attr('width', 18)
-                .attr('height', 18)
-                .style('fill', colorScale);
-            let tmp = legend.append('text')
-                .attr('x', widthInner - 24)
-                .attr('y', 9)
-                .attr('dy', '.35em')
-                .style('text-anchor', 'end')
-                .text((d: any) => d);
-            if (settings.legend.textStyle.fontSize) {
-                tmp.attr('font-size', settings.legend.textStyle.fontSize);
-            }
-        }
-
+        D3Fns.drawLegend(svg, settings, groupNames);
 
         D3Fns.drawTitle(svg, settings);
 
-    }
-
-    getLocationOffset(settings: ChartSettings, i: number) {
-        let location = settings.legend.location;
-        if (location === 'top-right') {
-            return i * 20;
-        } else if (location === 'bottom-right') {
-            return settings.heightInner - settings.margin.bottom - (i * 20);
-        } else {
-            return i * 20;
-        }
     }
 
 }

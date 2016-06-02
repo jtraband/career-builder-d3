@@ -1,5 +1,5 @@
 import { DataSet, DataRow, DataColumn  } from './data-set';
-import { VBarChartOptions, BarChartSettings } from './interfaces';
+import { VBarChartOptions, XYChartSettings } from './interfaces';
 import { D3Fns  } from './d3-fns';
 
 declare var d3: any;
@@ -11,7 +11,7 @@ export class VerticalBarChart {
 
         let dataRows = dataSet.dataRows;
 
-        let settings = new BarChartSettings(options);
+        let settings = new XYChartSettings(options);
         let widthInner = settings.widthInner;
         let heightInner = settings.heightInner;
 
@@ -73,25 +73,7 @@ export class VerticalBarChart {
             .attr('height', (d: any) => heightInner - yScale(d.value))
             .style('fill', (d: any) => colorScale(d.name));
 
-        // don't bother with legends if only one group
-        if (groupNames.length > 1) {
-            let legend = svg.selectAll('.legend')
-                .data(groupNames)
-                .enter().append('g')
-                .attr('class', 'legend')
-                .attr('transform', (d: any, i: number) => 'translate(0,' + i * 20 + ')');
-            legend.append('rect')
-                .attr('x', widthInner - 18)
-                .attr('width', 18)
-                .attr('height', 18)
-                .style('fill', colorScale);
-            legend.append('text')
-                .attr('x', widthInner - 24)
-                .attr('y', 9)
-                .attr('dy', '.35em')
-                .style('text-anchor', 'end')
-                .text((d: any) => d);
-        }
+        D3Fns.drawLegend(svg, settings, groupNames);
 
         D3Fns.drawTitle(svg, settings);
     }
