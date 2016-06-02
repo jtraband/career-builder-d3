@@ -87,7 +87,6 @@ export class D3Fns {
         return d3.max(dataRows, (dr: DataRow) => {
             return d3.max(dr.values, (v: any) => v);
         });
-
     }
 
     // from https://bl.ocks.org/mbostock/7555321 

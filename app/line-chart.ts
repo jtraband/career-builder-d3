@@ -1,4 +1,4 @@
-import { DataSet, DataRow, DataColumn  } from './data-set';
+import { DataSet, DataRow  } from './data-set';
 import { LineChartOptions, XYChartSettings } from './interfaces';
 import { D3Fns  } from './d3-fns';
 
