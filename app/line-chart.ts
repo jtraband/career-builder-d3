@@ -1,5 +1,5 @@
-import { DataSet, DataRow, DataColumn  } from './data-set';
-import { LineChartOptions, BarChartSettings } from './interfaces';
+import { DataSet, DataRow  } from './data-set';
+import { LineChartOptions, XYChartSettings } from './interfaces';
 import { D3Fns  } from './d3-fns';
 
 declare var d3: any;
@@ -11,24 +11,25 @@ export class LineChart {
 
         let dataRows = dataSet.dataRows;
 
-        let settings = new BarChartSettings(options);
+        let settings = new XYChartSettings(options);
         let widthInner = settings.widthInner;
         let heightInner = settings.heightInner;
 
         let svg = D3Fns.initializeSvg(settings);
         let maxValue = D3Fns.getMaxValue(dataRows);
+        let minValue = D3Fns.getMinValue(dataRows);
         let colorScale = D3Fns.getColorScale(settings.colors);
         let groupNames = dataSet.createGroups();
 
         let xScale = d3.scale.ordinal()
-            .rangePoints([0, widthInner])
-            .domain(dataRows.map((dr: DataRow) => dr.label));
-             // x.domain(d3.extent(data, function(d) { return d.date; }));
-
+            .domain(dataRows.map((dr: DataRow) => dr.label))
+            // TODO: allow this to be set in options
+            // .1 padding allows room for xAxis labels
+            .rangePoints([0, widthInner], .1);
 
         let yScale = d3.scale.linear()
-            .range([heightInner, 0])
-            .domain([0, maxValue]);
+            .domain([minValue, maxValue])
+            .range([heightInner, 0]);
 
         let xAxis = d3.svg.axis()
             .scale(xScale)
@@ -36,12 +37,13 @@ export class LineChart {
 
         let xAxisOptions = settings.xAxis;
         if (xAxisOptions.visible) {
+            let tickWidth = xScale.range().length > 1 ? xScale.range()[1] : settings.widthInner;
             svg.append('g')
                 .attr('class', 'x axis')
                 .attr('transform', 'translate(0,' + heightInner + ')')
                 .call(xAxis)
                 .selectAll('.tick text')
-                .call(D3Fns.wrap, xScale.rangeBand());
+                .call(D3Fns.wrap, tickWidth);
         }
 
         let yAxisOptions = settings.yAxis;
@@ -56,13 +58,12 @@ export class LineChart {
         }
 
         let lineDefs = dataSet.dataColumns.slice(1).map((dc, ix) => {
-            let colIx = ix;
             return {
                 name: dc.name,
                 values: dataRows.map(dr => {
                     return {
                         name: dr.label,
-                        value: dr.values[colIx]
+                        value: dr.values[ix]
                     };
                 })
             };
@@ -86,25 +87,7 @@ export class LineChart {
             .attr('fill', 'none');
 
 
-        // don't bother with legends if only one group
-        if (groupNames.length > 1) {
-            let legend = svg.selectAll('.legend')
-                .data(groupNames)
-                .enter().append('g')
-                .attr('class', 'legend')
-                .attr('transform', (d: any, i: number) => 'translate(0,' + i * 20 + ')');
-            legend.append('rect')
-                .attr('x', widthInner - 18)
-                .attr('width', 18)
-                .attr('height', 18)
-                .style('fill', colorScale);
-            legend.append('text')
-                .attr('x', widthInner - 24)
-                .attr('y', 9)
-                .attr('dy', '.35em')
-                .style('text-anchor', 'end')
-                .text((d: any) => d);
-        }
+        D3Fns.drawLegend(svg, settings, groupNames);
 
         D3Fns.drawTitle(svg, settings);
     }

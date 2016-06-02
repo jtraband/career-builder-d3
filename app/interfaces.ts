@@ -50,6 +50,8 @@ export interface ChartLegend {
 export interface ChartAxis {
     ticks?: number;
     visible?: boolean;
+    // TODO: not yet implemented
+    label?: string;
 }
 
 
@@ -87,6 +89,7 @@ export class ChartSettings {
     widthInner: number;
     heightInner: number;
     legend: ChartLegend;
+    legendRectSize = 18; // fixed for now
 
     constructor(public options: ChartOptions) {
         let margin = options.margin;
@@ -105,7 +108,7 @@ export class ChartSettings {
 
 }
 
-export class BarChartSettings extends ChartSettings {
+export class XYChartSettings extends ChartSettings {
     xAxis: XAxis;
     yAxis: YAxis;
     constructor(public options: XYChartOptions) {

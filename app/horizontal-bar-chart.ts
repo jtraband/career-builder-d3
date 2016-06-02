@@ -1,17 +1,17 @@
-import { DataSet, DataRow, DataColumn  } from './data-set';
-import { HBarChartOptions, BarChartSettings, ChartLegend, ChartSettings  } from './interfaces';
+import { DataSet, DataRow  } from './data-set';
+import { HBarChartOptions, XYChartSettings   } from './interfaces';
 import { D3Fns  } from './d3-fns';
 
 declare var d3: any;
 
 // handles groups as well
-export class HorizontalBarChart  {
+export class HorizontalBarChart {
 
     draw(dataSet: DataSet, options: HBarChartOptions) {
 
         let dataRows = dataSet.dataRows;
 
-        let settings = new BarChartSettings(options);
+        let settings = new XYChartSettings(options);
         let widthInner = settings.widthInner;
         let heightInner = settings.heightInner;
 
@@ -21,17 +21,17 @@ export class HorizontalBarChart  {
 
         let groupNames = dataSet.createGroups();
 
-
         let xScale = d3.scale.linear()
-            .range([0, widthInner])
-            .domain([0, maxValue]);
+            .domain([0, maxValue])
+            .range([0, widthInner]);
 
         let y0Scale = d3.scale.ordinal()
-            .rangeRoundBands([0, heightInner], .2)
-            .domain(dataRows.map((dr: DataRow) => dr.label));
+            .domain(dataRows.map((dr: DataRow) => dr.label))
+            .rangeRoundBands([0, heightInner], .2);
 
         let y1Scale = d3.scale.ordinal()
-            .domain(groupNames).rangeRoundBands([0, y0Scale.rangeBand()]);
+            .domain(groupNames)
+            .rangeRoundBands([0, y0Scale.rangeBand()]);
 
         let xAxisOptions = settings.xAxis;
         if (xAxisOptions.visible) {
@@ -58,13 +58,11 @@ export class HorizontalBarChart  {
             }
 
             let yAxis = d3.svg.axis()
-                    .scale(yAxisScale)
-                    .orient('left');
+                .scale(yAxisScale)
+                .orient('left');
             svg.append('g')
                 .attr('class', 'y axis')
-                .call(yAxis)
-            // .selectAll('.tick text')
-            // .call(this.wrap, y0Scale.rangeBand());
+                .call(yAxis);
         }
 
         let band = svg.selectAll('.band')
@@ -93,7 +91,7 @@ export class HorizontalBarChart  {
                 })
                 .attr('y', (dr: any) => {
                     // 5 below is approx half of 11px font-size;
-                     return (y0Scale.rangeBand() / 2) + 5;
+                    return (y0Scale.rangeBand() / 2) + 5;
                 })
                 // TODO: allow setting text style for in-band text
                 .attr('font-size', '11px')
@@ -102,44 +100,10 @@ export class HorizontalBarChart  {
                 .attr('text-anchor', 'center');
         }
 
-        // don't bother with legends if only one group
-        if (groupNames.length > 1) {
-            let legend = svg.selectAll('.legend')
-                .data(groupNames)
-                .enter().append('g')
-                .attr('class', 'legend')
-                // .attr('transform', (d: any, i: number) => 'translate(0,' + (heightInner - settings.margin.bottom - (i * 20)) + ')');
-                .attr('transform', (d: any, i: number) => 'translate(0,' + this.getLocationOffset(settings, i) + ')');
-            legend.append('rect')
-                .attr('x', widthInner - 18)
-                .attr('width', 18)
-                .attr('height', 18)
-                .style('fill', colorScale);
-            let tmp = legend.append('text')
-                .attr('x', widthInner - 24)
-                .attr('y', 9)
-                .attr('dy', '.35em')
-                .style('text-anchor', 'end')
-                .text((d: any) => d);
-            if (settings.legend.textStyle.fontSize) {
-                tmp.attr('font-size', settings.legend.textStyle.fontSize);
-            }
-        }
-
+        D3Fns.drawLegend(svg, settings, groupNames);
 
         D3Fns.drawTitle(svg, settings);
 
-    }
-
-    getLocationOffset(settings: ChartSettings, i: number) {
-        let location = settings.legend.location;
-        if (location === 'top-right') {
-            return i * 20;
-        } else if (location === 'bottom-right') {
-            return settings.heightInner - settings.margin.bottom - (i * 20);
-        } else {
-            return i * 20;
-        }
     }
 
 }
