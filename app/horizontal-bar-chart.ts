@@ -5,7 +5,7 @@ import { D3Fns  } from './d3-fns';
 declare var d3: any;
 
 // handles groups as well
-export class HorizontalBarChart  {
+export class HorizontalBarChart {
 
     draw(dataSet: DataSet, options: HBarChartOptions) {
 
@@ -21,17 +21,17 @@ export class HorizontalBarChart  {
 
         let groupNames = dataSet.createGroups();
 
-
         let xScale = d3.scale.linear()
-            .range([0, widthInner])
-            .domain([0, maxValue]);
+            .domain([0, maxValue])
+            .range([0, widthInner]);
 
         let y0Scale = d3.scale.ordinal()
-            .rangeRoundBands([0, heightInner], .2)
-            .domain(dataRows.map((dr: DataRow) => dr.label));
+            .domain(dataRows.map((dr: DataRow) => dr.label))
+            .rangeRoundBands([0, heightInner], .2);
 
         let y1Scale = d3.scale.ordinal()
-            .domain(groupNames).rangeRoundBands([0, y0Scale.rangeBand()]);
+            .domain(groupNames)
+            .rangeRoundBands([0, y0Scale.rangeBand()]);
 
         let xAxisOptions = settings.xAxis;
         if (xAxisOptions.visible) {
@@ -58,13 +58,11 @@ export class HorizontalBarChart  {
             }
 
             let yAxis = d3.svg.axis()
-                    .scale(yAxisScale)
-                    .orient('left');
+                .scale(yAxisScale)
+                .orient('left');
             svg.append('g')
                 .attr('class', 'y axis')
-                .call(yAxis)
-            // .selectAll('.tick text')
-            // .call(this.wrap, y0Scale.rangeBand());
+                .call(yAxis);
         }
 
         let band = svg.selectAll('.band')
@@ -93,7 +91,7 @@ export class HorizontalBarChart  {
                 })
                 .attr('y', (dr: any) => {
                     // 5 below is approx half of 11px font-size;
-                     return (y0Scale.rangeBand() / 2) + 5;
+                    return (y0Scale.rangeBand() / 2) + 5;
                 })
                 // TODO: allow setting text style for in-band text
                 .attr('font-size', '11px')

@@ -21,14 +21,12 @@ export class LineChart {
         let groupNames = dataSet.createGroups();
 
         let xScale = d3.scale.ordinal()
-            .rangePoints([0, widthInner])
-            .domain(dataRows.map((dr: DataRow) => dr.label));
-             // x.domain(d3.extent(data, function(d) { return d.date; }));
-
+            .domain(dataRows.map((dr: DataRow) => dr.label))
+            .rangePoints([0, widthInner]);
 
         let yScale = d3.scale.linear()
-            .range([heightInner, 0])
-            .domain([0, maxValue]);
+            .domain([0, maxValue])
+            .range([heightInner, 0]);
 
         let xAxis = d3.svg.axis()
             .scale(xScale)
@@ -40,8 +38,7 @@ export class LineChart {
                 .attr('class', 'x axis')
                 .attr('transform', 'translate(0,' + heightInner + ')')
                 .call(xAxis)
-                .selectAll('.tick text')
-                .call(D3Fns.wrap, xScale.rangeBand());
+                .selectAll('.tick text');
         }
 
         let yAxisOptions = settings.yAxis;
