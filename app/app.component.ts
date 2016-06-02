@@ -105,20 +105,21 @@ export class AppComponent {
 
     initLineData() {
         let dataSet = new DataSet();
-        dataSet.addColumns('Year', 'Sales', 'Expenses');
+        dataSet.addColumns('Year', 'Sales', 'Expenses', 'Margin');
         dataSet.addRows([
-            ['2013', 1000, 400],
-            ['2014', 1170, 460],
-            ['Really really extra really really really long label for 2015', 660, 1120],
-            ['2016', 1030, 540]
+            ['2013', 1000, 400, 600],
+            ['2014', 1170, 460, 710],
+            ['Really really extra really really really long label for 2015', 660, 1120, -460],
+            ['2016', 1030, 540, 490]
         ]);
         let options: LineChartOptions = {
             width: 500,
             height: 300,
             title: { text: 'Line Data', textStyle: { fontSize: '18px' } },
-            margin: { top: 25, right: 10, bottom: 40, left: 50 },
+            margin: { top: 45, right: 10, bottom: 65, left: 50 },
             yAxis: { ticks: 5 },
-            legend: { location: 'bottom-right' }
+            // legend: { location: 'bottom-right' }
+            legend: { location: 'below' }
         };
         this.lineInfo = { data: dataSet, options: options };
     }

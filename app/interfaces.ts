@@ -89,6 +89,7 @@ export class ChartSettings {
     widthInner: number;
     heightInner: number;
     legend: ChartLegend;
+    legendRectSize = 18; // fixed for now
 
     constructor(public options: ChartOptions) {
         let margin = options.margin;

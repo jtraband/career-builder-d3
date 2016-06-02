@@ -1,5 +1,5 @@
-import { ChartTitle, ChartSettings, TextStyle, DEFAULTS } from './interfaces';
-import { DataSet, DataRow } from './data-set';
+import { ChartSettings, TextStyle, DEFAULTS } from './interfaces';
+import { DataRow } from './data-set';
 
 declare var d3: any;
 
@@ -54,15 +54,15 @@ export class D3Fns {
             .data(groupNames)
             .enter().append('g')
             .attr('class', 'legend')
-            .attr('transform', (d: any, i: number) => 'translate(0,' + this.getLocationOffset(settings, i) + ')');
+            .attr('transform', D3Fns.legendTransform(settings, groupNames));
         legend.append('rect')
-            .attr('x', settings.widthInner - 18)
-            .attr('width', 18)
-            .attr('height', 18)
+            .attr('width', settings.legendRectSize)
+            .attr('height', settings.legendRectSize)
             .style('fill', colorScale);
         let tmp = legend.append('text')
-            .attr('x', settings.widthInner - 24)
-            .attr('y', 9)
+            // -6 is separator between legend color and legend name.
+            .attr('x', -6)
+            .attr('y', settings.legendRectSize / 2)
             .attr('dy', '.35em')
             .style('text-anchor', 'end')
             .text((d: any) => d);
@@ -72,20 +72,39 @@ export class D3Fns {
 
     }
 
-    private static getLocationOffset(settings: ChartSettings, i: number) {
-        let location = settings.legend.location;
-        if (location === 'top-right') {
-            return i * 20;
-        } else if (location === 'bottom-right') {
-            return settings.heightInner - settings.margin.top - (i * 20);
-        } else {
-            return i * 20;
-        }
+    static legendTransform(settings: ChartSettings, groupNames: string[]) {
+        return (d: any, i: number) => {
+            let x: number;
+            let y: number;
+            let location = settings.legend.location;
+            if (location === 'top-right') {
+                x = settings.widthInner - settings.legendRectSize;
+                y = i * 20;
+            } else if (location === 'bottom-right') {
+                x = settings.widthInner - settings.legendRectSize;
+                y = settings.heightInner - settings.margin.top - ((groupNames.length - (i + 1)) * 20);
+            } else if (location === 'above') {
+                x = settings.margin.left + (settings.widthInner / groupNames.length) * i;
+                y = 0 - settings.margin.top / 2;
+            } else if (location === 'below') {
+                x = settings.margin.left + (settings.widthInner / groupNames.length) * i;
+                y = settings.heightInner + settings.margin.top;
+            }
+            return `translate(${x}, ${y})`;
+        };
+
     }
+
 
     static getMaxValue(dataRows: DataRow[]) {
         return d3.max(dataRows, (dr: DataRow) => {
             return d3.max(dr.values, (v: any) => v);
+        });
+    }
+
+    static getMinValue(dataRows: DataRow[]) {
+        return d3.min(dataRows, (dr: DataRow) => {
+            return d3.min(dr.values, (v: any) => v);
         });
     }
 

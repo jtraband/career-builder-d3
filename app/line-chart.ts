@@ -17,6 +17,7 @@ export class LineChart {
 
         let svg = D3Fns.initializeSvg(settings);
         let maxValue = D3Fns.getMaxValue(dataRows);
+        let minValue = D3Fns.getMinValue(dataRows);
         let colorScale = D3Fns.getColorScale(settings.colors);
         let groupNames = dataSet.createGroups();
 
@@ -27,7 +28,7 @@ export class LineChart {
             .rangePoints([0, widthInner], .1);
 
         let yScale = d3.scale.linear()
-            .domain([0, maxValue])
+            .domain([minValue, maxValue])
             .range([heightInner, 0]);
 
         let xAxis = d3.svg.axis()
