@@ -22,7 +22,9 @@ export class LineChart {
 
         let xScale = d3.scale.ordinal()
             .domain(dataRows.map((dr: DataRow) => dr.label))
-            .rangePoints([0, widthInner]);
+            // TODO: allow this to be set in options
+            // .1 padding allows room for xAxis labels
+            .rangePoints([0, widthInner], .1);
 
         let yScale = d3.scale.linear()
             .domain([0, maxValue])
@@ -34,11 +36,13 @@ export class LineChart {
 
         let xAxisOptions = settings.xAxis;
         if (xAxisOptions.visible) {
+            let tickWidth = xScale.range().length > 1 ? xScale.range()[1] : settings.widthInner;
             svg.append('g')
                 .attr('class', 'x axis')
                 .attr('transform', 'translate(0,' + heightInner + ')')
                 .call(xAxis)
-                .selectAll('.tick text');
+                .selectAll('.tick text')
+                .call(D3Fns.wrap, tickWidth);
         }
 
         let yAxisOptions = settings.yAxis;

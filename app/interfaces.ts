@@ -50,6 +50,8 @@ export interface ChartLegend {
 export interface ChartAxis {
     ticks?: number;
     visible?: boolean;
+    // TODO: not yet implemented
+    label?: string;
 }
 
 

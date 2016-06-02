@@ -109,14 +109,14 @@ export class AppComponent {
         dataSet.addRows([
             ['2013', 1000, 400],
             ['2014', 1170, 460],
-            ['2015', 660, 1120],
+            ['Really really extra really really really long label for 2015', 660, 1120],
             ['2016', 1030, 540]
         ]);
         let options: LineChartOptions = {
             width: 500,
             height: 300,
             title: { text: 'Line Data', textStyle: { fontSize: '18px' } },
-            margin: { top: 25, right: 10, bottom: 20, left: 50 },
+            margin: { top: 25, right: 10, bottom: 40, left: 50 },
             yAxis: { ticks: 5 },
             legend: { location: 'bottom-right' }
         };

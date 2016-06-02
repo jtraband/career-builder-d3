@@ -54,7 +54,6 @@ export class D3Fns {
             .data(groupNames)
             .enter().append('g')
             .attr('class', 'legend')
-            // .attr('transform', (d: any, i: number) => 'translate(0,' + (heightInner - settings.margin.bottom - (i * 20)) + ')');
             .attr('transform', (d: any, i: number) => 'translate(0,' + this.getLocationOffset(settings, i) + ')');
         legend.append('rect')
             .attr('x', settings.widthInner - 18)
@@ -78,7 +77,7 @@ export class D3Fns {
         if (location === 'top-right') {
             return i * 20;
         } else if (location === 'bottom-right') {
-            return settings.heightInner - settings.margin.bottom - (i * 20);
+            return settings.heightInner - settings.margin.top - (i * 20);
         } else {
             return i * 20;
         }
