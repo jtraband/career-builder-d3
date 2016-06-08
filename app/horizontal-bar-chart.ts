@@ -1,5 +1,5 @@
 import { DataSet, DataRow  } from './data-set';
-import { HBarChartOptions, XYChartSettings   } from './interfaces';
+import { HBarChartOptions, HBarChartSettings   } from './interfaces';
 import { D3Fns  } from './d3-fns';
 
 declare var d3: any;
@@ -11,7 +11,7 @@ export class HorizontalBarChart {
 
         let dataRows = dataSet.dataRows;
 
-        let settings = new XYChartSettings(options);
+        let settings = new HBarChartSettings(options);
         let widthInner = settings.widthInner;
         let heightInner = settings.heightInner;
 
@@ -80,6 +80,7 @@ export class HorizontalBarChart {
             .attr('height', y1Scale.rangeBand())
             .style('fill', (group: any) => colorScale(group.name));
 
+ 
         if (groupNames.length === 1) {
             // in band labels - only if a single group
             band.selectAll('text')
@@ -94,8 +95,10 @@ export class HorizontalBarChart {
                     return (y0Scale.rangeBand() / 2) + 5;
                 })
                 // TODO: allow setting text style for in-band text
-                .attr('font-size', '11px')
-                .attr('fill', 'black')
+                // .attr('font-size', '11px')
+                // .attr('fill', 'black')
+                .attr('font-size', settings.inBar.textStyle.fontSize)
+                .attr('fill', settings.inBar.color)
                 .attr('text-anchor', 'left')
                 .attr('text-anchor', 'center');
         }

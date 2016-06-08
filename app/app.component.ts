@@ -4,6 +4,7 @@ import { XYChartOptions, HBarChartOptions, VBarChartOptions, LineChartOptions } 
 import { VerticalBarChartComponent } from './vertical-bar-chart.component';
 import { HorizontalBarChartComponent } from './horizontal-bar-chart.component';
 import { LineChartComponent } from './line-chart.component';
+import { FunnelChartComponent } from './funnel-chart.component';
 
 declare var d3: any;
 
@@ -15,6 +16,7 @@ declare var d3: any;
             <button type="button" class="btn btn-primary" (click)="onUpdateMilitaryInfo()" >Update Military Info</button>
             <button type="button" class="btn btn-primary" (click)="onToggleAxis('xAxis')" >Toggle X axis visibility</button>
             <button type="button" class="btn btn-primary" (click)="onToggleAxis('yAxis')" >Toggle Y axis visibility</button>
+            <button type="button" class="btn btn-primary" (click)="onUpdateFunnel()" >Update funnel</button>
         </div>
         
         <horizontal-bar-chart *ngIf="militaryInfo"
@@ -30,9 +32,10 @@ declare var d3: any;
         <div style="margin-top: 10px"></div>
         <line-chart *ngIf="lineInfo" 
             [data]="lineInfo.data" [options]="lineInfo.options" style="display: inline-block"></line-chart>                    
-                    
+        <funnel-chart *ngIf="funnelInfo" 
+            [data]="funnelInfo.data" [options]="funnelInfo.options" style="display: inline-block"></funnel-chart>
      `,
-     directives: [HorizontalBarChartComponent, VerticalBarChartComponent, LineChartComponent]
+     directives: [HorizontalBarChartComponent, VerticalBarChartComponent, LineChartComponent, FunnelChartComponent]
 
 })
 export class AppComponent {
@@ -41,6 +44,7 @@ export class AppComponent {
     militaryInfo: { data: DataSet, options: HBarChartOptions };
     companyInfo: { data: DataSet, vOptions: VBarChartOptions, hOptions: HBarChartOptions };
     lineInfo: { data: DataSet, options: LineChartOptions };
+    funnelInfo: { data: any, options: any };
 
     constructor(elementRef: ElementRef) {
         this.elementRef = elementRef;
@@ -52,6 +56,7 @@ export class AppComponent {
             this.initMilitaryData();
             this.initCompanyData();
             this.initLineData();
+            this.initFunnelData();
         }, 0);
     }
 
@@ -76,6 +81,7 @@ export class AppComponent {
             margin: { top: 25, right: 30, bottom: 40, left: 30 },
             colors: [ 'lightblue', '#2ca02c' ], // 2nd one ignored because only a single color is needed
             xAxis: { ticks: 11 },
+            inBar: { color: 'darkblue', textStyle: { fontSize: '12px'} }
         };
         this.militaryInfo = { data: dataSet, options: options };
     }
@@ -122,6 +128,26 @@ export class AppComponent {
             legend: { location: 'below' }
         };
         this.lineInfo = { data: dataSet, options: options };
+    }
+
+    initFunnelData() {
+        let data = [
+            ['Plants',     3000],
+            ['Flowers',    2500],
+            ['Perennials', 2000],
+            ['Roses',      1000],
+         ];
+         let options = {
+                width: 500,
+                height: 300,
+                block: { dynamicHeight: true, dynamicSlope: true }
+         };
+         this.funnelInfo = { data: data, options: options };
+    }
+
+    onUpdateFunnel() {
+        let flowers = this.funnelInfo.data[1];
+        flowers[1] = flowers[1] + 100;
     }
 
     onUpdateMilitaryInfo() {

@@ -15,7 +15,7 @@ export interface XYChartOptions extends ChartOptions {
 }
 
 export interface HBarChartOptions extends XYChartOptions {
-
+    inBar?: InBarStyle;
 }
 
 export interface VBarChartOptions extends XYChartOptions {
@@ -63,6 +63,11 @@ export interface YAxis extends ChartAxis {
 
 }
 
+export interface InBarStyle {
+    color?: any;
+    textStyle?: TextStyle;
+}
+
 export class DEFAULTS {
     private static axis: ChartAxis = {
         ticks: 5,
@@ -76,6 +81,8 @@ export class DEFAULTS {
     public static legend: ChartLegend = { visible: true, textStyle: {}, location: 'top-right' };
 
     public static textStyleTitle: TextStyle = { fontSize: '20px', textDecoration: 'bold' };
+
+    public static inBar: InBarStyle =  { color: 555, textStyle: { fontSize: '11px' } };
 }
 
 export interface TextStyle {
@@ -117,4 +124,12 @@ export class XYChartSettings extends ChartSettings {
         this.yAxis = <YAxis>_.defaults( options.yAxis || {}, DEFAULTS.yAxis);
     }
 
+}
+
+export class HBarChartSettings extends XYChartSettings {
+    inBar: InBarStyle;
+    constructor(public options: HBarChartOptions) {
+        super(options);
+        this.inBar = _.defaults(options.inBar || {}, DEFAULTS.inBar)
+    }
 }
