@@ -4,6 +4,7 @@ import { XYChartOptions, HBarChartOptions, VBarChartOptions, LineChartOptions } 
 import { VerticalBarChartComponent } from './vertical-bar-chart.component';
 import { HorizontalBarChartComponent } from './horizontal-bar-chart.component';
 import { LineChartComponent } from './line-chart.component';
+import { FunnelChartComponent } from './funnel-chart.component';
 
 declare var d3: any;
 
@@ -30,9 +31,10 @@ declare var d3: any;
         <div style="margin-top: 10px"></div>
         <line-chart *ngIf="lineInfo" 
             [data]="lineInfo.data" [options]="lineInfo.options" style="display: inline-block"></line-chart>                    
-                    
+        <funnel-chart *ngIf="funnelInfo" 
+            [data]="funnelInfo.data" [options]="funnelInfo.options" style="display: inline-block"></funnel-chart>
      `,
-     directives: [HorizontalBarChartComponent, VerticalBarChartComponent, LineChartComponent]
+     directives: [HorizontalBarChartComponent, VerticalBarChartComponent, LineChartComponent, FunnelChartComponent]
 
 })
 export class AppComponent {
@@ -41,6 +43,7 @@ export class AppComponent {
     militaryInfo: { data: DataSet, options: HBarChartOptions };
     companyInfo: { data: DataSet, vOptions: VBarChartOptions, hOptions: HBarChartOptions };
     lineInfo: { data: DataSet, options: LineChartOptions };
+    funnelInfo: { data: any, options: any };
 
     constructor(elementRef: ElementRef) {
         this.elementRef = elementRef;
@@ -52,6 +55,7 @@ export class AppComponent {
             this.initMilitaryData();
             this.initCompanyData();
             this.initLineData();
+            this.initFunnelData();
         }, 0);
     }
 
@@ -122,6 +126,20 @@ export class AppComponent {
             legend: { location: 'below' }
         };
         this.lineInfo = { data: dataSet, options: options };
+    }
+
+    initFunnelData() {
+        let data = [
+            ['Plants',     5000],
+            ['Flowers',    2500],
+            ['Perennials', 200],
+            ['Roses',      50],
+         ];
+         let options = {
+                width: 500,
+                height: 300
+         };
+         this.funnelInfo = { data: data, options: options };
     }
 
     onUpdateMilitaryInfo() {
