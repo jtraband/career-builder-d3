@@ -5,8 +5,8 @@ export abstract class AbstractChartComponent  {
     data: DataSet;
     options: ChartOptions;
 
-    private _dataRevNumber: number;
-    private _prevOptions: any;
+    _dataRevNumber: number;
+    _prevOptions: any;
 
     abstract drawChart(): void;
 
@@ -20,7 +20,7 @@ export abstract class AbstractChartComponent  {
          }
      }
 
-     private hasChanges() {
+     hasChanges() {
          let changed = this.data.revNumber !== this._dataRevNumber
             || ! _.isEqual(this.options, this._prevOptions);
          if (changed) {

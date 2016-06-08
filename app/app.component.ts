@@ -16,6 +16,7 @@ declare var d3: any;
             <button type="button" class="btn btn-primary" (click)="onUpdateMilitaryInfo()" >Update Military Info</button>
             <button type="button" class="btn btn-primary" (click)="onToggleAxis('xAxis')" >Toggle X axis visibility</button>
             <button type="button" class="btn btn-primary" (click)="onToggleAxis('yAxis')" >Toggle Y axis visibility</button>
+            <button type="button" class="btn btn-primary" (click)="onUpdateFunnel()" >Update funnel</button>
         </div>
         
         <horizontal-bar-chart *ngIf="militaryInfo"
@@ -80,6 +81,7 @@ export class AppComponent {
             margin: { top: 25, right: 30, bottom: 40, left: 30 },
             colors: [ 'lightblue', '#2ca02c' ], // 2nd one ignored because only a single color is needed
             xAxis: { ticks: 11 },
+            inBar: { color: 'darkblue', textStyle: { fontSize: '12px'} }
         };
         this.militaryInfo = { data: dataSet, options: options };
     }
@@ -130,16 +132,22 @@ export class AppComponent {
 
     initFunnelData() {
         let data = [
-            ['Plants',     5000],
+            ['Plants',     3000],
             ['Flowers',    2500],
-            ['Perennials', 200],
-            ['Roses',      50],
+            ['Perennials', 2000],
+            ['Roses',      1000],
          ];
          let options = {
                 width: 500,
-                height: 300
+                height: 300,
+                block: { dynamicHeight: true, dynamicSlope: true }
          };
          this.funnelInfo = { data: data, options: options };
+    }
+
+    onUpdateFunnel() {
+        let flowers = this.funnelInfo.data[1];
+        flowers[1] = flowers[1] + 100;
     }
 
     onUpdateMilitaryInfo() {

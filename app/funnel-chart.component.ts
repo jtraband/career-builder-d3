@@ -13,6 +13,8 @@ export class FunnelChartComponent extends AbstractChartComponent  {
     @Input() data: any;
     @Input() options: any;
 
+    private _prevData: any;
+
     constructor(private _elementRef: ElementRef) {
         super();
     }
@@ -23,5 +25,14 @@ export class FunnelChartComponent extends AbstractChartComponent  {
 
         chart.draw(this.data, this.options);
     }
+
+    hasChanges() {
+         let changed = ! (_.isEqual(this.data, this._prevData) && _.isEqual(this.options, this._prevOptions));
+         if (changed) {
+             this._dataRevNumber = this.data.revNumber;
+             this._prevOptions = _.cloneDeep(this.options);
+         }
+         return changed;
+     }
 
 }
