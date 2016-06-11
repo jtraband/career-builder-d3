@@ -16,6 +16,15 @@ export class HorizontalBarChart {
         let heightInner = settings.heightInner;
 
         let svg = D3Fns.initializeSvg(settings);
+        let barToolTip = (settings.barToolTip)
+            ? d3.tip().attr('class', 'd3-tip').html(settings.barToolTip)
+            : null;
+
+        if (barToolTip) {
+            Array.prototype.forEach.call(document.querySelectorAll('.d3-tip'), (t: any) => t.parentNode.removeChild(t));
+            svg.call(barToolTip);
+        }
+
         let maxValue = D3Fns.getMaxValue(dataRows);
         let colorScale = D3Fns.getColorScale(settings.colors);
 
@@ -80,7 +89,20 @@ export class HorizontalBarChart {
             .attr('height', y1Scale.rangeBand())
             .style('fill', (group: any) => colorScale(group.name));
 
- 
+        if ( settings.barEvents ) {
+            let rects = band.selectAll('rect');
+            _.forIn(settings.barEvents, (action: any, eventName: string) => {
+                rects.on(eventName, action);
+            });
+        }
+        if (barToolTip) {
+           let rects = band.selectAll('rect');
+            rects
+                .on('mouseover', barToolTip.show)
+                .on('mouseleave', barToolTip.hide);
+        }
+
+
         if (groupNames.length === 1) {
             // in band labels - only if a single group
             band.selectAll('text')

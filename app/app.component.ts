@@ -81,7 +81,7 @@ export class AppComponent {
             margin: { top: 25, right: 30, bottom: 40, left: 30 },
             colors: [ 'lightblue', '#2ca02c' ], // 2nd one ignored because only a single color is needed
             xAxis: { ticks: 11 },
-            inBar: { color: 'darkblue', textStyle: { fontSize: '12px'} }
+            inBar: { color: 'darkblue', textStyle: { fontSize: '12px'} },
         };
         this.militaryInfo = { data: dataSet, options: options };
     }
@@ -104,6 +104,13 @@ export class AppComponent {
         };
         let hOptions: HBarChartOptions = _.cloneDeep(options);
         hOptions.legend = { location: 'bottom-right', textStyle: { fontSize: '20px' } };
+        hOptions.barEvents = {
+            click: (d: any, i: number) => {
+                alert('clicked on bar: ' + d);
+            }
+        };
+        hOptions.barToolTip = (d) => '<p>value is' + d + '</p>';
+
         let vOptions: VBarChartOptions = _.cloneDeep(options);
         vOptions.legend = { location: 'top-right' };
         this.companyInfo = { data: dataSet, hOptions: hOptions, vOptions: vOptions };
