@@ -14,11 +14,30 @@ export interface XYChartOptions extends ChartOptions {
     yAxis?: YAxis;
 }
 
-export interface HBarChartOptions extends XYChartOptions {
-    inBar?: InBarStyle;
+export interface EventMap {
+    [eventName: string]: EventFunc;
 }
 
-export interface VBarChartOptions extends XYChartOptions {
+export interface EventFunc {
+    (d: any, i: number): void;
+}
+
+export interface ToolTipFunc {
+    (d: any): string;
+}
+
+export interface BarChartOptions extends XYChartOptions {
+    barEvents?: EventMap;
+    barToolTip?: ToolTipFunc;
+}
+
+
+export interface HBarChartOptions extends BarChartOptions {
+    inBar?: InBarStyle;
+
+}
+
+export interface VBarChartOptions extends BarChartOptions {
 
 }
 
@@ -126,7 +145,17 @@ export class XYChartSettings extends ChartSettings {
 
 }
 
-export class HBarChartSettings extends XYChartSettings {
+export class BarChartSettings extends XYChartSettings {
+    constructor(public options: BarChartOptions) {
+        super(options);
+
+    }
+
+    public get barEvents() { return this.options.barEvents || {}; };
+    public get barToolTip() { return this.options.barToolTip; }
+}
+
+export class HBarChartSettings extends BarChartSettings {
     inBar: InBarStyle;
     constructor(public options: HBarChartOptions) {
         super(options);

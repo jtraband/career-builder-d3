@@ -1,6 +1,6 @@
 import { Component, ElementRef } from '@angular/core';
 import { DataSet } from './data-set';
-import { XYChartOptions, HBarChartOptions, VBarChartOptions, LineChartOptions } from './interfaces';
+import { BarChartOptions, HBarChartOptions, VBarChartOptions, LineChartOptions } from './interfaces';
 import { VerticalBarChartComponent } from './vertical-bar-chart.component';
 import { HorizontalBarChartComponent } from './horizontal-bar-chart.component';
 import { LineChartComponent } from './line-chart.component';
@@ -81,7 +81,7 @@ export class AppComponent {
             margin: { top: 25, right: 30, bottom: 40, left: 30 },
             colors: [ 'lightblue', '#2ca02c' ], // 2nd one ignored because only a single color is needed
             xAxis: { ticks: 11 },
-            inBar: { color: 'darkblue', textStyle: { fontSize: '12px'} }
+            inBar: { color: 'darkblue', textStyle: { fontSize: '12px'} },
         };
         this.militaryInfo = { data: dataSet, options: options };
     }
@@ -95,15 +95,25 @@ export class AppComponent {
             [ '2014', 6000, 5000 ],
             [ '2013', 2000, 1000 ]
         ]);
-        let options: XYChartOptions = {
+        let options: BarChartOptions = {
             width: 500,
             height: 300,
             title: { text: 'Company Data', textStyle: { fontSize: '18px' } },
             margin: { top: 25, right: 10, bottom: 20, left: 50 },
             yAxis: { ticks: 5 },
         };
+        options.barEvents = {
+            click: (d: any, i: number) => {
+                alert(`clicked on bar '${d.name}' with value '${d.value}'`);
+            }
+        };
+        options.barToolTip = (d) => {
+            return `<p>bar '${d.name}' with value '${d.value}'</p>`;
+        };
+
         let hOptions: HBarChartOptions = _.cloneDeep(options);
         hOptions.legend = { location: 'bottom-right', textStyle: { fontSize: '20px' } };
+
         let vOptions: VBarChartOptions = _.cloneDeep(options);
         vOptions.legend = { location: 'top-right' };
         this.companyInfo = { data: dataSet, hOptions: hOptions, vOptions: vOptions };

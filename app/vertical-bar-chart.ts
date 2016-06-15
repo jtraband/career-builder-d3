@@ -1,5 +1,5 @@
 import { DataSet, DataRow  } from './data-set';
-import { VBarChartOptions, XYChartSettings } from './interfaces';
+import { VBarChartOptions, BarChartSettings } from './interfaces';
 import { D3Fns  } from './d3-fns';
 
 declare var d3: any;
@@ -11,11 +11,12 @@ export class VerticalBarChart {
 
         let dataRows = dataSet.dataRows;
 
-        let settings = new XYChartSettings(options);
+        let settings = new BarChartSettings(options);
         let widthInner = settings.widthInner;
         let heightInner = settings.heightInner;
 
         let svg = D3Fns.initializeSvg(settings);
+        let barToolTip = D3Fns.createToolTip(svg, settings.barToolTip);
         let maxValue = D3Fns.getMaxValue(dataRows);
         let colorScale = D3Fns.getColorScale(settings.colors);
         let groupNames = dataSet.createGroups();
@@ -72,6 +73,10 @@ export class VerticalBarChart {
             .attr('y', (d: any) => yScale(d.value))
             .attr('height', (d: any) => heightInner - yScale(d.value))
             .style('fill', (d: any) => colorScale(d.name));
+
+        let rects = band.selectAll('rect');
+        D3Fns.initializeEvents(settings.barEvents, rects);
+        D3Fns.initializeToolTip(barToolTip, rects);
 
         D3Fns.drawLegend(svg, settings, groupNames);
 

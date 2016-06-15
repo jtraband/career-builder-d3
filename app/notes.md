@@ -11,3 +11,4 @@
 - option to specify multiple rows for 'above' and 'below' legends. ( right now just one row is supported).
 - option to specify y origin on line chart. ( right now origin is the min value).
 - create standalone npm package 
+- replace all refs to features that css can support with ability to specify 'class' attributes.

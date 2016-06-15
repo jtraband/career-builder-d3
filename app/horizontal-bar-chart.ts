@@ -16,6 +16,8 @@ export class HorizontalBarChart {
         let heightInner = settings.heightInner;
 
         let svg = D3Fns.initializeSvg(settings);
+        let barToolTip = D3Fns.createToolTip(svg, settings.barToolTip);
+
         let maxValue = D3Fns.getMaxValue(dataRows);
         let colorScale = D3Fns.getColorScale(settings.colors);
 
@@ -80,7 +82,10 @@ export class HorizontalBarChart {
             .attr('height', y1Scale.rangeBand())
             .style('fill', (group: any) => colorScale(group.name));
 
- 
+        let rects = band.selectAll('rect');
+        D3Fns.initializeEvents(settings.barEvents, rects);
+        D3Fns.initializeToolTip(barToolTip, rects);
+
         if (groupNames.length === 1) {
             // in band labels - only if a single group
             band.selectAll('text')
