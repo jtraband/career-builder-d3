@@ -1,4 +1,4 @@
-import { ChartSettings, TextStyle, DEFAULTS } from './interfaces';
+import { ChartSettings, TextStyle, EventMap, ToolTipFunc, DEFAULTS } from './interfaces';
 import { DataRow } from './data-set';
 
 declare var d3: any;
@@ -9,7 +9,8 @@ export class D3Fns {
 
     static initializeSvg(settings: ChartSettings) {
         d3.select(settings.selector).selectAll('*').remove();
-
+        // remove all existing tooltips
+        d3.select(settings.selector).selectAll('.d3-tip', (t: any) => t.parentNode.removeChild(t));
         // define svg as a G element that translates the origin to the top-left corner of the chart area.
         let svg = d3.select(settings.selector)
             .append('svg')
@@ -70,6 +71,33 @@ export class D3Fns {
             tmp.attr('font-size', settings.legend.textStyle.fontSize);
         }
 
+    }
+
+    static initializeEvents(eventMap: EventMap, regions: any): void {
+        if (!eventMap) {
+            return;
+        }
+        _.forIn(eventMap, (action: any, eventName: string) => {
+            regions.on(eventName, action);
+        });
+    }
+
+    static createToolTip(svg: any, toolTipFunc: ToolTipFunc): any {
+        if (!toolTipFunc) {
+            return null;
+        }
+        let toolTip = d3.tip().attr('class', 'd3-tip').html(toolTipFunc);
+        svg.call(toolTip);
+        return toolTip;
+    }
+
+    static initializeToolTip(toolTip: any, regions: any) {
+        if (!toolTip) {
+            return;
+        }
+        regions
+            .on('mouseover', toolTip.show)
+            .on('mouseleave', toolTip.hide);
     }
 
     static legendTransform(settings: ChartSettings, groupNames: string[]) {

@@ -1,6 +1,6 @@
 import { Component, ElementRef } from '@angular/core';
 import { DataSet } from './data-set';
-import { XYChartOptions, HBarChartOptions, VBarChartOptions, LineChartOptions } from './interfaces';
+import { BarChartOptions, HBarChartOptions, VBarChartOptions, LineChartOptions } from './interfaces';
 import { VerticalBarChartComponent } from './vertical-bar-chart.component';
 import { HorizontalBarChartComponent } from './horizontal-bar-chart.component';
 import { LineChartComponent } from './line-chart.component';
@@ -95,21 +95,24 @@ export class AppComponent {
             [ '2014', 6000, 5000 ],
             [ '2013', 2000, 1000 ]
         ]);
-        let options: XYChartOptions = {
+        let options: BarChartOptions = {
             width: 500,
             height: 300,
             title: { text: 'Company Data', textStyle: { fontSize: '18px' } },
             margin: { top: 25, right: 10, bottom: 20, left: 50 },
             yAxis: { ticks: 5 },
         };
-        let hOptions: HBarChartOptions = _.cloneDeep(options);
-        hOptions.legend = { location: 'bottom-right', textStyle: { fontSize: '20px' } };
-        hOptions.barEvents = {
+        options.barEvents = {
             click: (d: any, i: number) => {
-                alert('clicked on bar: ' + d);
+                alert(`clicked on bar '${d.name}' with value '${d.value}'`);
             }
         };
-        hOptions.barToolTip = (d) => '<p>value is' + d + '</p>';
+        options.barToolTip = (d) => {
+            return `<p>bar '${d.name}' with value '${d.value}'</p>`;
+        };
+
+        let hOptions: HBarChartOptions = _.cloneDeep(options);
+        hOptions.legend = { location: 'bottom-right', textStyle: { fontSize: '20px' } };
 
         let vOptions: VBarChartOptions = _.cloneDeep(options);
         vOptions.legend = { location: 'top-right' };
